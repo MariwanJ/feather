@@ -1,3 +1,9 @@
+Note:
+I imported this library that I found on github with the hope that I would be able to compile, and benifit of the work done. 
+Unfortunatly, using Linux or Windows I couldn't compile the whole project completely and this never worked for me. I wasted my 3 weeks try to fix the issues without any results. Be aware of the problems that you might face.. This is here only as a backup for the past. (Mariwan Jalal 2022-12-11)
+**************************************************************************************************************************************************
+
+
 Feather
 =======
 
