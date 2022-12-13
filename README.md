@@ -1,6 +1,10 @@
 Note:
 I imported this library that I found on github with the hope that I would be able to compile, and benifit of the work done. 
 Unfortunatly, using Linux or Windows I couldn't compile the whole project completely and this never worked for me. I wasted my 3 weeks try to fix the issues without any results. Be aware of the problems that you might face.. This is here only as a backup for the past. (Mariwan Jalal 2022-12-11)
+In the new branch (temp) you find all forked version saved by other users under the folder checkme. 
+You find also a picture showing the size of each version.. But for me, none of them worked really on Linux. The whole project seems to be configured for Linux.
+There are hard coded paths like /usr/local ..etc. 
+MARIWAN 2022-12-13
 **************************************************************************************************************************************************
 
 
