@@ -5,6 +5,11 @@ In the new branch (temp) you find all forked version saved by other users under 
 You find also a picture showing the size of each version.. But for me, none of them worked really on Linux. The whole project seems to be configured for Linux.
 There are hard coded paths like /usr/local ..etc. 
 MARIWAN 2022-12-13
+
+Update:
+I managed to fix many issues, specially with CMAKE and DLL creation for windows. There are many mores and it is very time consuming. 
+Please don't fork at this stage. There will be many changes. 
+2022-12-19 Mariwan
 **************************************************************************************************************************************************
 
 
