@@ -31,9 +31,12 @@ namespace feather
 
     enum StatusState { FAILED, PASSED, WARNING };
 
-    struct status
+    class status
     {
-        status(StatusState _state=PASSED, std::string _msg="") : state(_state),msg(_msg) {};
+    public:
+        status(StatusState _state=PASSED, std::string _msg="") : state(PASSED),
+                                                                  msg("") {};
+    public:
         StatusState state;
         std::string msg;
     };

@@ -24,6 +24,20 @@
 #ifndef DEPS_HPP
 #define DEPS_HPP
 
+
+#ifdef FEATHER_PLATFORM_WINDOWS
+	#include<windows.h>
+	#ifdef FEATHER_BUILD_DLL
+		#define FEATHER_API __declspec(dllexport)
+	#else
+		#define FEATHER_API __declspec(dllimport)
+	#endif
+#else
+	#error FEATHER only supports Windows!
+#endif
+
+
+
 // C
 #include <dlfcn.h>
 #include <stdio.h>
@@ -36,21 +50,27 @@
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <iomanip>
 #include <cstdlib>
+#include <assert.h>
 #include <algorithm>
 #include <memory>
 #include <utility>
 #include <chrono>
 
 // OpenGL
+//#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
+//#include <GL/glut.h>
 #include <GL/freeglut.h>
+//#include <GLFW/glfw3.h>
+//#include <GL/gl_mangle.h>
 
 // boost
 #include <boost/assert.hpp>

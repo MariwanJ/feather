@@ -33,12 +33,13 @@
 #include "node.hpp"
 #include "object.hpp"
 #include "field.hpp"
+#include "qml_status.hpp"
 #include <QtQuick/QQuickPaintedItem>
 
 using namespace feather;
 
 // SELECTION 
-class Selection: public QObject
+class FEATHER_API Selection : public QObject
 {
     Q_OBJECT
         Q_ENUMS(Type)
@@ -50,15 +51,72 @@ class Selection: public QObject
             Edge = selection::Edge,
             Face = selection::Face,
             Object = selection::Object,
-            Field = selection::Field,
+            Node = selection::Node,
+            Field = selection::Field
         };
 };
 
-// SCENEGRAPH 
-class SceneGraph : public QObject
+// SELECTION 
+class FEATHER_API Connection : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(unsigned int suid READ suid WRITE setSuid)
+    Q_PROPERTY(unsigned int sfid READ sfid WRITE setSfid)
+    Q_PROPERTY(unsigned int tuid READ tuid WRITE setSuid)
+    Q_PROPERTY(unsigned int tfid READ tfid WRITE setSfid)
 
+    public:
+        Connection(QObject* parent=0);
+        ~Connection();
+
+        // suid 
+        void setSuid(unsigned int& i) {
+            if(m_suid != i) {
+                m_suid=i;
+            }
+        }
+
+        unsigned int suid() { return m_suid; }
+
+        // sfid 
+        void setSfid(unsigned int& i) {
+            if(m_sfid != i) {
+                m_sfid=i;
+            }
+        }
+
+        unsigned int sfid() { return m_tfid; }
+
+        // tuid 
+        void setTuid(unsigned int& i) {
+            if(m_tuid != i) {
+                m_tuid=i;
+            }
+        }
+
+        unsigned int tuid() { return m_tuid; }
+
+        // sfid 
+        void setTfid(unsigned int& i) {
+            if(m_tfid != i) {
+                m_tfid=i;
+            }
+        }
+
+        unsigned int tfid() { return m_tfid; }
+
+    private:
+        unsigned int m_suid;
+        unsigned int m_sfid;
+        unsigned int m_tuid;
+        unsigned int m_tfid;
+};
+
+// SCENEGRAPH 
+class FEATHER_API SceneGraph : public QObject
+{
+    Q_OBJECT
+ 
     public:
         SceneGraph(QObject* parent=0);
         ~SceneGraph();
@@ -69,18 +127,21 @@ class SceneGraph : public QObject
         Q_INVOKABLE bool remove_node(int uid);
         Q_INVOKABLE QString node_name(int uid);
         Q_INVOKABLE int get_node_by_name(QString name);
+        Q_INVOKABLE QList<int> get_nodes_by_type(unsigned int type);
+        Q_INVOKABLE QList<int> get_nodes_by_id(unsigned int id);
         Q_INVOKABLE int node_id(int uid);
         Q_INVOKABLE int connect_nodes(int n1, int f1, int n2, int f2);
+        Q_INVOKABLE unsigned int disconnect_nodes(unsigned int suid, unsigned int sfid, unsigned int tuid, unsigned int tfid);
         Q_INVOKABLE int selected_node();
-        Q_INVOKABLE int select_node(int uid);
-        Q_INVOKABLE int select_node(int type, int uid);
-        Q_INVOKABLE int select_field(int type, int uid, int fid);
+        Q_INVOKABLE int select_node(unsigned int uid);
+        //Q_INVOKABLE int select_node(int type, int uid);
+        Q_INVOKABLE int select_field(unsigned int type, unsigned int uid, unsigned int fid);
         Q_INVOKABLE void clear_selection();
         Q_INVOKABLE int run_command_string(QString str);
         Q_INVOKABLE void triggerUpdate();
         Q_INVOKABLE void add_node_to_layer(int uid, int lid);
         Q_INVOKABLE bool connected(unsigned int uid, unsigned int fid);
-        Q_INVOKABLE QList<unsigned int> connected_fields(unsigned int uid, unsigned int fid);
+        Q_INVOKABLE QList<int> connected_uids(unsigned int uid, unsigned int fid);
 
     signals:
         void nodeSelected(); // this will inform the widget to update it's selection from the selection manager
@@ -96,52 +157,191 @@ class SceneGraph : public QObject
         void nodesRemoved();
         void cleared();
         void nodeFieldChanged(unsigned int uid, unsigned int nid, unsigned int fid);
+        void keyAdded(unsigned int uid, unsigned int nid, unsigned int fid);
+
 };
 
+class FEATHER_API Curve : public QObject
+{
+    Q_OBJECT
+         Q_ENUMS(Type)
+    public:
+        Curve(){};
+        ~Curve(){};
+        enum Type {
+            Line = curve::Line,
+            Bezier = curve::Bezier,
+            Quadrtratic = curve::Quadtratic,
+            Arc = curve::Arc,
+            Svg = curve::Svg
+        };
+    
+};
+
+class FEATHER_API KeyValue : public QObject
+{
+    Q_OBJECT
+        Q_PROPERTY(float time READ time WRITE setTime NOTIFY timeChanged)
+        Q_PROPERTY(float value READ value WRITE setValue NOTIFY valueChanged)
+        Q_PROPERTY(int inCurve READ inCurve WRITE setInCurve NOTIFY inCurveChanged)
+        Q_PROPERTY(float cp1x READ cp1x WRITE setCp1x NOTIFY cp1xChanged)
+        Q_PROPERTY(float cp1y READ cp1y WRITE setCp1y NOTIFY cp1yChanged)
+        Q_PROPERTY(int outCurve READ outCurve WRITE setOutCurve NOTIFY outCurveChanged)
+        Q_PROPERTY(float cp2x READ cp2x WRITE setCp2x NOTIFY cp2xChanged)
+        Q_PROPERTY(float cp2y READ cp2y WRITE setCp2y NOTIFY cp2yChanged)
+
+    public:
+        KeyValue(QObject* parent=0);
+        ~KeyValue();
+
+        // time 
+        void setTime(float& v) {
+            if(m_time != v) {
+                m_time = v;
+                emit timeChanged();
+            }
+        }
+
+        float time() { return m_time; }
+
+        // value 
+        void setValue(float& v) {
+            if(m_value != v) {
+                m_value = v;
+                emit valueChanged();
+            }
+        }
+
+        float value() { return m_value; }
+
+        // control point 1
+
+        // in curve 
+        void setInCurve(int& v) {
+            if(m_incurve != v) {
+                m_incurve = v;
+                emit inCurveChanged();
+            }
+        }
+
+        int inCurve() { return m_incurve; }
+
+        void setCp1x(float& v) {
+            if(m_cp1x != v) {
+                m_cp1x = v;
+                emit cp1xChanged();
+            }
+        }
+
+        float cp1x() { return m_cp1x; }
+
+        void setCp1y(float& v) {
+            if(m_cp1y != v) {
+                m_cp1y = v;
+                emit cp1yChanged();
+            }
+        }
+
+        float cp1y() { return m_cp1y; }
+
+
+        // control point 2
+
+        // out curve 
+        void setOutCurve(int& v) {
+            if(m_outcurve != v) {
+                m_outcurve = v;
+                emit outCurveChanged();
+            }
+        }
+
+        int outCurve() { return m_outcurve; }
+
+        void setCp2x(float& v) {
+            if(m_cp2x != v) {
+                m_cp2x = v;
+                emit cp2xChanged();
+            }
+        }
+
+        float cp2x() { return m_cp2x; }
+
+        void setCp2y(float& v) {
+            if(m_cp2y != v) {
+                m_cp2y = v;
+                emit cp2yChanged();
+            }
+        }
+
+        float cp2y() { return m_cp2y; };
+
+    signals:
+        void timeChanged();
+        void valueChanged();
+        void inCurveChanged();
+        void outCurveChanged();
+        void cp1xChanged();
+        void cp1yChanged();
+        void cp2xChanged();
+        void cp2yChanged();
+
+    private:
+        float m_time;
+        float m_value; 
+        int m_incurve; 
+        float m_cp1x;
+        float m_cp1y;
+        int m_outcurve; 
+        float m_cp2x;
+        float m_cp2y;
+};
+ 
 // FIELD 
-class Field: public QObject
+class FEATHER_API Field: public QObject
 {
     Q_OBJECT
         Q_ENUMS(Type)
-        Q_PROPERTY(int uid READ uid WRITE setUid)
-        Q_PROPERTY(int node READ node WRITE setNode)
-        Q_PROPERTY(int field READ field WRITE setField)
+        Q_ENUMS(ConnectionType)
+        Q_PROPERTY(unsigned int uid READ uid WRITE setUid)
+        Q_PROPERTY(unsigned int nid READ nid WRITE setNid)
+        Q_PROPERTY(unsigned int fid READ fid WRITE setFid)
         Q_PROPERTY(int type READ type NOTIFY typeChanged)
         Q_PROPERTY(bool boolVal READ boolVal WRITE setBoolVal NOTIFY boolValChanged)
         Q_PROPERTY(int intVal READ intVal WRITE setIntVal NOTIFY intValChanged)
         Q_PROPERTY(double realVal READ realVal WRITE setRealVal NOTIFY realValChanged)
+        //Q_PROPERTY(QQmlListProperty<KeyValue> keyArrayVal READ keyArrayVal WRITE setKeyArrayVal NOTIFY keyArrayValChanged)
+        Q_PROPERTY(QQmlListProperty<KeyValue> keyArrayVal READ keyArrayVal NOTIFY keyArrayValChanged)
+        //Q_PROPERTY(QList<KeyValue> keyArrayVal READ keyArrayVal WRITE setKeyArrayVal NOTIFY keyArrayValChanged)
+        Q_PROPERTY(QList<double> realArrayVal READ realArrayVal WRITE setRealArrayVal NOTIFY realArrayValChanged)
         Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
+        Q_PROPERTY(QQmlListProperty<Connection> connections READ connections )
  
     public:
         Field(QObject* parent=0);
         ~Field();
 
         // uid 
-        void setUid(int& i) {
-            if(m_uid != i) {
-                m_uid=i;
+        void setUid(unsigned int& uid) {
+            if(m_uid != uid) {
+                m_uid = uid;
             }
         }
 
-        int uid() { return m_uid; }
+        unsigned int uid() { return m_uid; }
 
         // node 
-        void setNode(int& n) {
-            if(m_node != n) {
-                m_node=n;
+        void setNid(unsigned int& nid) {
+            if(m_nid != nid) {
+                m_nid = nid;
             }
         }
 
-        int node() { return m_node; }
+        unsigned int nid() { return m_nid; }
 
         // field 
-        void setField(int& f) {
-            if(m_field != f) {
-                m_field=f;
-            }
-        }
+        void setFid(unsigned int& fid);
 
-        int field() { return m_field; }
+        unsigned int fid() { return m_fid; }
 
         // type 
         int type();
@@ -181,7 +381,101 @@ class Field: public QObject
 
         FReal realVal() { get_real_val(); return m_realVal; };
 
+        // keyArrayVal
+        KeyValue* key(int i) {
+            return m_keyArrayVal[i];
+        }
+
+        // keyArrayVal
+        Q_INVOKABLE void setKeyArrayValue(int i, float time, float value, int inCurve, float cp1x, float cp1y, int outCurve, float cp2x, float cp2y) {
+            m_keyArrayVal[i]->setTime(time);
+            m_keyArrayVal[i]->setValue(value);
+            m_keyArrayVal[i]->setInCurve(inCurve);
+            m_keyArrayVal[i]->setCp1x(cp1x);
+            m_keyArrayVal[i]->setCp1y(cp1y);
+            m_keyArrayVal[i]->setOutCurve(outCurve);
+            m_keyArrayVal[i]->setCp2x(cp2x);
+            m_keyArrayVal[i]->setCp2y(cp2y);
+            set_key_array_val();
+        }
+ 
+        // keyArrayVal
+        Q_INVOKABLE void setKeyArrayValue(float time, float value) {
+            // set the value of a key at a certain time
+            // If the key doesn't exist, make one
+            bool found=false;
+            int tval = time * 1000;
+            for ( auto key : m_keyArrayVal ) {
+                // we'll do some rounding just so we don't
+                // end up with a lot of keyframes just a few msec
+                // apart from eachother
+                int keytime = key->time() * 1000;
+                if ( tval == keytime ) {
+                    // change value
+                    key->setValue(value);
+                    found = true;
+                }
+            }
+            if ( !found ) {
+                // make a new key
+                KeyValue* key = new KeyValue();
+                key->setTime(time);
+                key->setValue(value);
+                m_keyArrayVal.append(key);
+                set_key_array_val();
+            }
+            emit keyArrayValChanged();
+        }
+
+        // this method will only return a value if there is
+        // a key of the same time inside the keyarray. If
+        // there is no matching time, a nullptr will be
+        // returned. It's up to the caller to check to see
+        // if a null has been returned and then look to
+        // the track node to get a value if needed.
+        Q_INVOKABLE KeyValue* getKey(float time) {
+            // we'll do some rounding to keep away from
+            // keys off by a few msecs
+            int ttime = time * 1000;
+            for ( auto key : m_keyArrayVal ) {
+                int keytime = key->time() * 1000;
+                if ( keytime == ttime )
+                    return key;
+            }
+            return nullptr;
+        }
+
+        // This is like above except it only tells if a keyframe
+        // already exist in the array at a specific time
+        Q_INVOKABLE bool keyExist(float time) {
+            // we'll do some rounding to keep away from
+            // keys off by a few msecs
+            int ttime = time * 1000;
+            for ( auto key : m_keyArrayVal ) {
+                int keytime = key->time() * 1000;
+                if ( keytime == ttime )
+                    return true;
+            }
+            return false;
+        };
+
+        QQmlListProperty<KeyValue> keyArrayVal();
+
+        // realArrayVal 
+        void setRealArrayVal(QList<double>& v) {
+            if(m_realArrayVal != v) {
+                //std::cout << "real changed\n";
+                m_realArrayVal = v;
+                set_real_array_val();
+                emit realArrayValChanged();
+            }
+        }
+
+        QList<double> realArrayVal();
+
         bool connected() { get_connected(); return m_connected; };
+
+        QQmlListProperty<Connection> connections();
 
         enum Type {
             Bool=field::Bool,
@@ -196,12 +490,32 @@ class Field: public QObject
             RGBA=field::RGBA,
             BoolArray=field::BoolArray,
             IntArray=field::IntArray,
-            FloatArray=field::FloatArray,
+            RealArray=field::RealArray,
             VertexArray=field::VertexArray,
             VectorArray=field::VectorArray,
             RGBArray=field::RGBArray,
             RGBAArray=field::RGBAArray,
-            Time=field::Time
+            Time=field::Time,
+            Node=field::Node,
+            NodeArray=field::NodeArray,
+            Matrix3x3=field::Matrix3x3,
+            Matrix4x4=field::Matrix4x4,
+            VertexIndiceWeight=field::VertexIndiceWeight,
+            VertexIndiceGroupWeight=field::VertexIndiceGroupWeight,
+            VertexIndiceWeightArray=field::VertexIndiceWeightArray,
+            VertexIndiceGroupWeightArray=field::VertexIndiceGroupWeightArray,
+            MeshArray=field::MeshArray,
+            Key=field::Key,
+            KeyArray=field::KeyArray,
+            CurvePoint2D=field::CurvePoint2D,
+            CurvePoint3D=field::CurvePoint3D,
+            CurvePoint2DArray=field::CurvePoint2DArray,
+            CurvePoint3DArray=field::CurvePoint3DArray
+        };
+
+        enum ConnectionType {
+            In=field::connection::In,
+            Out=field::connection::Out,
         };
 
     signals:
@@ -209,34 +523,45 @@ class Field: public QObject
         void boolValChanged();
         void intValChanged();
         void realValChanged();
+        void realArrayValChanged();
+        void keyArrayValChanged();
         void connectedChanged();
+ 
+    protected slots:
+        void updateKeyArray();
         
     private:
         // get field value
         void get_bool_val();
         void get_int_val();
         void get_real_val();
+        void get_key_array_val();
 
         // set field value
         void set_bool_val();
         void set_int_val();
         void set_real_val();
+        void set_real_array_val();
+        void set_key_array_val();
 
         void get_connected();
-
-        int m_uid; // unique number of the node in the sg
-        int m_node; // node key
-        int m_field; // field key
+ 
+        unsigned int m_uid; // unique number of the node in the sg
+        unsigned int m_nid; // node key
+        unsigned int m_fid; // field key
         Type m_type; // type
         bool m_boolVal;
         int m_intVal;
         FReal m_realVal;
+        QList<double> m_realArrayVal;
+        QList<KeyValue*> m_keyArrayVal;
         bool m_connected;
+        QList<Connection*> m_connections;
 };
 
 
 // NODE
-class Node: public QObject
+class FEATHER_API Node: public QObject
 {
     Q_OBJECT
         Q_ENUMS(Type)
@@ -283,6 +608,7 @@ class Node: public QObject
             Time = node::Time,
             Light = node::Light,
             Texture = node::Texture,
+            Animation = node::Animation,
             Modifier = node::Modifier,
             Deformer = node::Deformer,
             Manipulator = node::Manipulator,
@@ -311,7 +637,7 @@ class Node: public QObject
 
 
 // Parameter
-class Parameter : public QObject
+class FEATHER_API Parameter : public QObject
 {
     Q_OBJECT
         Q_ENUMS(Type)
@@ -397,7 +723,7 @@ class Parameter : public QObject
 };
 
 // Command
-class Command : public QObject
+class FEATHER_API Command : public QObject
 {
     Q_OBJECT
         Q_PROPERTY(QQmlListProperty<Parameter> parameters READ parameters)
@@ -424,7 +750,7 @@ class Command : public QObject
 };
 
 
-class PluginObject { 
+class FEATHER_API PluginObject {
     public:
         PluginObject(const QString &_name,
                 const QString &_description,
@@ -438,7 +764,7 @@ class PluginObject {
 };
 
 
-class Plugins : public QAbstractListModel
+class FEATHER_API Plugins : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -463,13 +789,13 @@ class Plugins : public QAbstractListModel
         QList<PluginObject*> m_items;
 };
 
-class Tools : public QObject
+class FEATHER_API Tools : public QObject
 {
     Q_OBJECT
 
     public:
         Tools(QObject* parent=0){};
-        ~Tools(){};
+        //~Tools(){};
         Q_INVOKABLE QString urlToString(QUrl url) { return url.path(); };
 };
 

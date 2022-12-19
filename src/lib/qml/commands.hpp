@@ -42,39 +42,39 @@ namespace feather
         namespace command
         {
 
-            status init();
+            FEATHER_API status init();
 
             // Node
 
-            unsigned int add_node(const unsigned int node, const std::string name); 
-            bool nodes_added(std::vector<unsigned int>& uids);
-            void remove_node(const unsigned int uid, status& error);
-            void nodes_updated();
-            bool node_exists(int uid);
-            status connect_nodes(int n1, int f1, int n2, int f2); 
-            void get_node_icon(const unsigned int nid, std::string& file, status& error);
-            void get_node_by_name(std::string name, unsigned int& uid);
-            void get_node_by_type(node::Type type, std::vector<unsigned int>& uids);
-            unsigned int get_node_id(const unsigned int uid, status& error);
-            status get_node_connected_uids(int uid, std::vector<int>& uids);
-            status get_node_connected_uids(int uid, int fid, std::vector<int>& uids);
-            status get_node_draw_items(int nid, draw::DrawItems& items);
-            status load_plugins();
-            status run_command(std::string cmd, feather::parameter::ParameterList params);
-            status run_command_string(std::string str);
+            FEATHER_API unsigned int add_node(const unsigned int node, const std::string name); 
+            FEATHER_API bool nodes_added(std::vector<unsigned int>& uids);
+            FEATHER_API void remove_node(const unsigned int uid, status& error);
+            FEATHER_API void nodes_updated();
+            FEATHER_API bool node_exists(int uid);
+            FEATHER_API status connect_nodes(int n1, int f1, int n2, int f2); 
+            FEATHER_API void get_node_icon(const unsigned int nid, std::string& file, status& error);
+            FEATHER_API void get_node_by_name(std::string name, unsigned int& uid);
+            FEATHER_API void get_node_by_type(node::Type type, std::vector<unsigned int>& uids);
+            FEATHER_API unsigned int get_node_id(const unsigned int uid, status& error);
+            FEATHER_API status get_node_connected_uids(unsigned int uid, std::vector<unsigned int>& uids);
+            FEATHER_API status get_node_connected_uids(unsigned int uid, unsigned int fid, std::vector<unsigned int>& uids);
+            FEATHER_API status get_node_draw_items(int nid, draw::DrawItems& items);
+            FEATHER_API status load_plugins();
+            FEATHER_API status run_command(std::string cmd, feather::parameter::ParameterList params);
+            FEATHER_API status run_command_string(std::string str);
 
             
             // Layer
-            status add_layer(FLayer layer);
-            status remove_layer(int lid);
-            status move_layer(int sid, int tid);
-            status get_layer(int id, FLayer &layer);
-            void set_layer_name(std::string name, int lid);
-            void set_layer_color(int r, int g, int b, int lid);
-            void set_layer_visible(bool v, int lid);
-            void set_layer_locked(bool l, int lid);
-            int layer_count();
-            void add_node_to_layer(int lid, int uid);
+            FEATHER_API status add_layer(FLayer layer);
+            FEATHER_API status remove_layer(int lid);
+            FEATHER_API status move_layer(int sid, int tid);
+            FEATHER_API status get_layer(int id, FLayer &layer);
+            FEATHER_API void set_layer_name(std::string name, int lid);
+            FEATHER_API void set_layer_color(int r, int g, int b, int lid);
+            FEATHER_API void set_layer_visible(bool v, int lid);
+            FEATHER_API void set_layer_locked(bool l, int lid);
+            FEATHER_API int layer_count();
+            FEATHER_API void add_node_to_layer(int uid, int lid);
 
 
             // Fields
@@ -85,52 +85,59 @@ namespace feather
              * NOTE! if the field is connected it will return the field of the parent that's connected to it.
              * If you want to get the base of the node's fid, even if it's connected, use get_node_fieldBase().
              */
-            status get_field_base(int uid, int fid, feather::field::FieldBase* &f);
+            FEATHER_API status get_field_base(unsigned int uid, unsigned int fid, feather::field::FieldBase* &f, unsigned int conn=0);
+            FEATHER_API status get_field_base_array(unsigned int uid, unsigned int fid, std::vector<feather::field::FieldBase*> &f);
             /*!
              * Same as get_fieldBase() except it will return the base of the node field even if it's connected 
              */
-            status get_node_field_base(int uid, int fid, feather::field::FieldBase* &f);
+            FEATHER_API status get_node_field_base(unsigned int uid, unsigned int fid, feather::field::FieldBase* &f);
 
-            status get_field_type(int uid, int node, int field, int& val);
+            FEATHER_API status get_field_type(unsigned int uid, unsigned int nid, unsigned int fid, int& val);
  
             // get the field value
-            status get_field_val(int uid, int node, int field, bool& val);
-            status get_field_val(int uid, int node, int field, int& val);
-            status get_field_val(int uid, int node, int field, FReal& val);
-            status get_field_val(int uid, int node, int field, FMesh& val);
+            FEATHER_API status get_field_val(unsigned int uid, unsigned int nid, unsigned int fid, bool& val, unsigned int conn=0);
+            FEATHER_API status get_field_val(unsigned int uid, unsigned int nid, unsigned int fid, int& val, unsigned int conn=0);
+            FEATHER_API status get_field_val(unsigned int uid, unsigned int nid, unsigned int fid, FReal& val, unsigned int conn=0);
+            FEATHER_API status get_field_val(unsigned int uid, unsigned int nid, unsigned int fid, FMesh& val, unsigned int conn=0);
             // set the field value
-            status set_field_val(int uid, int node, int field, bool& val);
-            status set_field_val(int uid, int node, int field, int& val);
-            status set_field_val(int uid, int node, int field, FReal& val);
+            FEATHER_API status set_field_val(unsigned int uid, unsigned int nid, unsigned int fid, bool& val);
+            FEATHER_API status set_field_val(unsigned int uid, unsigned int nid, unsigned int fid, int& val);
+            FEATHER_API status set_field_val(unsigned int uid, unsigned int nid, unsigned int fid, FReal& val);
+            FEATHER_API status set_field_val(unsigned int uid, unsigned int nid, unsigned int fid, FRealArray& val);
+            FEATHER_API status set_field_val(unsigned int uid, unsigned int nid, unsigned int fid, FKeyArray& val);
 
-            status get_field_connection_status(int uid, int field, bool& val);
-            status get_field_connection_status(int uid, int node, int field, bool& val);
-            status get_field_connection_status(int suid, int sfid, int tuid, int tfid, bool& val);
-            status get_connected_fid(int uid, int fid, int& suid, int& sfid); // uid and fid are from the node's input
-            status get_fid_list(int uid, int nid, field::connection::Type conn, std::vector<field::FieldBase*>& list);
-            int get_field_count(int uid);
-            int get_in_field_count(int uid);
-            int get_out_field_count(int uid);
-            field::connection::Type get_field_connection_type(int uid, int fid);
+            FEATHER_API status get_field_connection_status(int uid, int field, bool& val);
+            FEATHER_API status get_field_connection_status(int uid, int node, int field, bool& val);
+            FEATHER_API status get_field_connection_status(int suid, int sfid, int tuid, int tfid, bool& val);
+            FEATHER_API status get_connected_fid(unsigned int uid, unsigned int fid, unsigned int& suid, unsigned int& sfid, unsigned int conn=0); // uid and fid are from the node's input
+            FEATHER_API status get_fid_list(int uid, int nid, field::connection::Type conn, std::vector<field::FieldBase*>& list);
+            FEATHER_API int get_field_count(int uid);
+            FEATHER_API int get_in_field_count(int uid);
+            FEATHER_API int get_out_field_count(int uid);
+            FEATHER_API field::connection::Type get_field_connection_type(int uid, int fid);
 
             // SG EDITOR
-            void clear();
-            void get_node_out_connections(const unsigned int uid, std::vector<unsigned int>& uids);
-            int get_node_connection_count(int uid);
-            void get_node_name(const unsigned int uid, std::string& name, status& error);
-            void scenegraph_update();
-            int get_min_uid();
-            int get_max_uid();
-            void get_plugins(std::vector<PluginInfo>& list);
+            FEATHER_API void clear();
+            FEATHER_API void get_node_out_connections(const unsigned int uid, std::vector<unsigned int>& uids);
+            FEATHER_API int get_node_connection_count(int uid);
+            FEATHER_API void get_node_name(const unsigned int uid, std::string& name, status& error);
+            FEATHER_API void scenegraph_update();
+            FEATHER_API int get_min_uid();
+            FEATHER_API int get_max_uid();
+            FEATHER_API void get_plugins(std::vector<PluginInfo>& list);
 
             // SG SELECTION
-            int selected_node();
-            status select_node(int uid);
+            FEATHER_API int selected_node();
+            FEATHER_API status select_node(int uid);
+
+            /* 
             status select_node(int type, int uid);
             status select_node(int type, int uid, int nid);
             status select_node(int type, int uid, int nid, int fid);
-            status get_selected_nodes(std::vector<int>& uids);
-            void clear_selection();
+            */
+
+            FEATHER_API status get_selected_nodes(std::vector<unsigned int>& uids);
+            FEATHER_API void clear_selection();
    
         } // namespace command
 

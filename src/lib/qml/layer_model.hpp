@@ -28,7 +28,7 @@
 #include "qml_deps.hpp"
 #include "commands.hpp"
 
-class LayerInfo { 
+class FEATHER_API LayerInfo {
     public:
         LayerInfo(const int _id,
                 const QString _name,
@@ -50,7 +50,7 @@ class LayerInfo {
         bool selected;
 };
 
-class LayerModel : public QAbstractListModel
+class FEATHER_API LayerModel : public QAbstractListModel
 {
     Q_OBJECT
         Q_PROPERTY(QList<LayerInfo*> layers READ layers WRITE setLayers NOTIFY layersChanged)

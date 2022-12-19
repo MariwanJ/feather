@@ -28,7 +28,7 @@
 #include "qml_deps.hpp"
 
 // BEZIER CURVE
-class BezierCurve : public QQuickItem
+class FEATHER_API BezierCurve : public QQuickItem
 {
     Q_OBJECT
 

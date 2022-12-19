@@ -27,103 +27,137 @@ import feather.field 1.0
 FieldModel {
 
     Component.onCompleted: {
+        // Base 
+        // in
+        addFieldName("parent",0,201)
+        addFieldName("tx",0,203)
+        addFieldName("ty",0,204)
+        addFieldName("tz",0,205)
+        addFieldName("rx",0,206)
+        addFieldName("ry",0,207)
+        addFieldName("rz",0,208)
+        addFieldName("sx",0,209)
+        addFieldName("sy",0,210)
+        addFieldName("sz",0,211)
+        addFieldName("centerpoint",0,212)
+ 
+        // out
+        addFieldName("child",0,202)
+        addFieldName("local",0,213)
+        addFieldName("world",0,214)
+        addFieldName("rotation",0,215)
+        addFieldName("tx",0,216)
+        addFieldName("ty",0,217)
+        addFieldName("tz",0,218)
+        addFieldName("rx",0,219)
+        addFieldName("ry",0,220)
+        addFieldName("rz",0,221)
+        addFieldName("sx",0,222)
+        addFieldName("sy",0,223)
+        addFieldName("sz",0,224)
+ 
         // Empty
-        addFieldName("parent",1,1)
-        addFieldName("child",1,2)
+        // no fields
 
         // Camera 
-        addFieldName("parent",2,1)
-        addFieldName("child",2,2)
-        addFieldName("type",2,3)
-        addFieldName("fov",2,4)
+        addFieldName("type",2,1)
+        addFieldName("fov",2,2)
+        addFieldName("near",2,3)
+        addFieldName("far",2,4)
 
-        // Shape 
-        addFieldName("parent",3,1)
-        addFieldName("child",3,2)
-        addFieldName("meshIn",3,3)
-        addFieldName("meshOut",3,4)
+        // Shape
+        // in 
+        addFieldName("mesh",3,1)
+        // out
+        addFieldName("mesh",3,2)
  
         // Time 
-        addFieldName("parent",4,1)
-        addFieldName("child",4,2)
-        addFieldName("stime",4,3)
-        addFieldName("etime",4,4)
-        addFieldName("cpos",4,5)
-        addFieldName("fps",4,6)
-        addFieldName("stime",4,7)
-        addFieldName("etime",4,8)
-        addFieldName("cpos",4,9)
-        addFieldName("fps",4,10)
+        addFieldName("stime",4,1)
+        addFieldName("etime",4,2)
+        addFieldName("cpos",4,3)
+        addFieldName("fps",4,4)
+        addFieldName("stime",4,5)
+        addFieldName("etime",4,6)
+        addFieldName("cpos",4,7)
+        addFieldName("fps",4,8)
  
         // Multiply 
-        addFieldName("parent",5,1)
-        addFieldName("child",5,2)
+        addFieldName("value",5,1)
+        addFieldName("mult",5,2)
         addFieldName("value",5,3)
-        addFieldName("mult",5,4)
-        addFieldName("value",5,5)
  
         // Divide 
-        addFieldName("parent",6,1)
-        addFieldName("child",6,2)
+        addFieldName("parent",6,201)
+        addFieldName("child",6,202)
+        addFieldName("value",6,1)
+        addFieldName("div",6,2)
         addFieldName("value",6,3)
-        addFieldName("div",6,4)
-        addFieldName("value",6,5)
-
-        // Transform
-        addFieldName("parent",7,1)
-        addFieldName("child",7,2)
-        addFieldName("tX",7,3)
-        addFieldName("tY",7,4)
-        addFieldName("tZ",7,5)
-        addFieldName("sX",7,6)
-        addFieldName("sY",7,7)
-        addFieldName("sZ",7,8)
-        addFieldName("rX",7,9)
-        addFieldName("rY",7,10)
-        addFieldName("rZ",7,11)
-        addFieldName("local_tX",7,12)
-        addFieldName("local_tY",7,13)
-        addFieldName("local_tZ",7,14)
-        addFieldName("local_sX",7,15)
-        addFieldName("local_sY",7,16)
-        addFieldName("local_sZ",7,17)
-        addFieldName("local_rX",7,18)
-        addFieldName("local_rY",7,19)
-        addFieldName("local_rZ",7,20)
-        addFieldName("world_tX",7,21)
-        addFieldName("world_tY",7,22)
-        addFieldName("world_tZ",7,23)
-        addFieldName("world_sX",7,24)
-        addFieldName("world_sY",7,25)
-        addFieldName("world_sZ",7,26)
-        addFieldName("world_rX",7,27)
-        addFieldName("world_rY",7,28)
-        addFieldName("world_rZ",7,29)
 
         // Polygon Shape 
-        addFieldName("parent",320,1)
-        addFieldName("mesh",320,3)
-        addFieldName("test",320,4)
+        addFieldName("mesh",320,1)
+        addFieldName("xform",320,2)
         // Out
-        addFieldName("child",320,2)
+        addFieldName("mesh",320,3)
 
         // Polygon Plane 
-        addFieldName("parent",321,1)
-        addFieldName("subX",321,3)
-        addFieldName("subY",321,4)
+        addFieldName("subX",321,1)
+        addFieldName("subY",321,2)
         // Out
-        addFieldName("child",321,2)
-        addFieldName("mesh",321,5)
+        addFieldName("mesh",321,3)
 
         // Polygon Cube
         // In
-        addFieldName("parent",322,1)
-        addFieldName("subX",322,3)
-        addFieldName("subY",322,4)
-        addFieldName("subZ",322,5)
+        addFieldName("subX",322,1)
+        addFieldName("subY",322,2)
+        addFieldName("subZ",322,3)
         // Out 
-        addFieldName("child",322,2)
-        addFieldName("mesh",322,6)
-    }
+        addFieldName("mesh",322,4)
 
+        // Polygon SubDiv 
+        // In
+        addFieldName("mesh",323,1)
+        addFieldName("level",323,2)
+        addFieldName("corner weights",323,3)
+        addFieldName("crease weights",323,4)
+        // Out 
+        addFieldName("mesh",323,5)
+
+
+        // Polygon SubDiv 
+        // In
+        addFieldName("mesh",324,1)
+        // Out 
+        addFieldName("mesh",324,2)
+
+        // ANIMATION PLUGIN
+
+        // Key Track 
+        // In
+        addFieldName("time",420,1)
+        addFieldName("keys",420,2)
+        addFieldName("type",420,3)
+        // Out 
+        addFieldName("value",420,4)
+
+        // Bone
+        // current bone (421) has no fields
+
+        // Morph 
+        // In
+        addFieldName("base",426,1)
+        addFieldName("targets",426,2)
+        addFieldName("weights",426,3)
+        // Out 
+        addFieldName("mesh",426,4)
+
+
+        // DEFORMER PLUGIN
+        // Cluster
+        // In
+        addFieldName("mesh",440,1)
+        addFieldName("ids",440,2)
+        addFieldName("weights",440,3)
+        // Out
+        addFieldName("mesh",440,4)
+    }
 }

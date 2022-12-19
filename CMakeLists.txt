@@ -1,58 +1,37 @@
-SET(CMAKE_CXX_COMPILER "g++")
+project(Feather)
 
-PROJECT(Feather)
+MESSAGE("CMAKE_HOST_SYSTEM_NAME ${CMAKE_HOST_SYSTEM_NAME}")
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.25.1)
 
-FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(Boost REQUIRED)
+set(GLUT_INCLUDE_DIR  "e:\\TEMP\\vender\\freeglut\\include")
+set(GLUT_glut_LIBRARY_DEBUG  "e:\\TEMP\\vender\\freeglut\\lib")
+set(GLUT_glut_LIBRARY_RELEASE  "e:\\TEMP\\vender\\freeglut\\lib")
+set(Boost_DIR "e:\\Boost\\boost")
 
-SET(QT_USE_OPENGL TRUE)
+set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\vender\\dlfcn-win32\\include")
+set(dlfcn-win32_LIBRARY_DEBUG  "e:\\TEMP\\vender\\dlfcn-win32\\lib")
+set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\vender\\dlfcn-win32")
+
+
+find_package(OpenGL REQUIRED)
+find_package(Boost REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(dlfcn-win32 REQUIRED)
+
+set(QT_USE_OPENGL TRUE)
 
 ADD_DEFINITIONS("-D GL_GLEXT_PROTOTYPES")
 
-SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Doxygen
-#FIND_PACKAGE(Doxygen)
-
-#IF(DOXYGEN_FOUND)
-
-    #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-
-    # this will build the docs when 'make' is ran
-    # to make it so that doxygen is only built when 'make doc' is
-    # called remove ALL from the line below
-    #ADD_CUSTOM_TARGET(doc ALL
-    #    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    #    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    #    COMMENT "Generating API documentation with Doxygen" VERBATIM
-    #)
-
-#ENDIF(DOXYGEN_FOUND)
-
-# RELEASE VERSION
-#set(CMAKE_BUILD_TYPE=Release)
-#set(CMAKE_CXX_FLAGS "-g -Wall")
-#set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-
 # DEBUG VERSION
-SET(CMAKE_BUILD_TYPE=Debug)
-SET(CMAKE_CXX_FLAGS "-ggdb -Wall")
-SET(CMAKE_CXX_FLAGS_RELEASE "-O0")
+set(CMAKE_BUILD_TYPE=Debug)
+set(CMAKE_CXX_FLAGS "-ggdb -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "-O0")
+set(CMAKE_CXX_LINK_FLAGS "-ldl")
 
-#set(CMAKE_BUILD_TYPE=Profile)
-
-#set(CMAKE_CXX_LIBRARY "libc++")
-#set(CMAKE_CXX_FLAGS "-g")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-# for seg fault debugging
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -v -da -Q -std=c++11")
-
-#set(CMAKE_CXX_FLAGS_PROFILE "-pg")
-#set(CMAKE_CXX_LINK_FLAGS "-Wl")
-SET(CMAKE_CXX_LINK_FLAGS "-ldl")
-
-ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(assets)
+add_subdirectory(src)
+add_subdirectory(assets)

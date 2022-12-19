@@ -28,14 +28,7 @@ import QtQuick.Layouts 1.2
 import feather.scenegraph 1.0
 
 Item {
-//Window {
     id: editor 
-    //title: "Viewport Editor"
-    //visible: true
-    //flags: Qt.SubWindow
-    //flags: Qt.Tool
-    //width: 600
-    //height: 600
     property Properties properties: Null
 
     // Show Viewport Components
@@ -46,7 +39,7 @@ Item {
         tooltip: "show the axis"
         checkable: true
         checked: true
-        onTriggered: { (checked) ? viewport.showAxis=true : viewport.showAxis=false }
+        //onTriggered: { (checked) ? viewport.showAxis=true : viewport.showAxis=false }
     }
 
     Action {
@@ -55,7 +48,7 @@ Item {
         tooltip: "show the grid"
         checkable: true
         checked: true
-        onTriggered: { (checked) ? viewport.showGrid=true : viewport.showGrid=false }
+        //onTriggered: { (checked) ? viewport.showGrid=true : viewport.showGrid=false }
     }
 
 
@@ -69,7 +62,7 @@ Item {
         tooltip: "show the grid"
         checkable: true
         checked: true
-        onTriggered: { (checked) ? viewport.showShaded=true : viewport.showShaded=false }
+        //onTriggered: { (checked) ? viewport.showShaded=true : viewport.showShaded=false }
     }
 
     Action {
@@ -78,7 +71,7 @@ Item {
         tooltip: "show the grid"
         checkable: true
         checked: false 
-        onTriggered: { (checked) ? viewport.showWireframe=true : viewport.showWireframe=false }
+        //onTriggered: { (checked) ? viewport.showWireframe=true : viewport.showWireframe=false }
     }
 
     Action {
@@ -87,7 +80,7 @@ Item {
         tooltip: "show the grid"
         checkable: true
         checked: false 
-        onTriggered: { (checked) ? viewport.showPoints=true : viewport.showPoints=false }
+        //onTriggered: { (checked) ? viewport.showPoints=true : viewport.showPoints=false }
     }
 
     */
@@ -160,7 +153,7 @@ Item {
                         id: vertexSelectBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/point_select.png"
+                        iconSource: "E:/Feather/iconspoint_select.png"
                         action: vertexSelectAction 
                     }
             
@@ -168,7 +161,7 @@ Item {
                         id: edgeSelectBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/edge_select.png"
+                        iconSource: "E:/Feather/iconsedge_select.png"
                         action: edgeSelectAction 
                     }
             
@@ -176,7 +169,7 @@ Item {
                         id: faceSelectBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/face_select.png"
+                        iconSource: "E:/Feather/iconsface_select.png"
                         action: faceSelectAction 
                     }
 
@@ -184,7 +177,7 @@ Item {
                         id: objectSelectBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/object_select.png"
+                        iconSource: "E:/Feather/iconsobject_select.png"
                         action: objectSelectAction 
                     }
                 }
@@ -205,7 +198,7 @@ Item {
                         id: showAxisBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/axis.png"
+                        iconSource: "E:/Feather/iconsaxis.png"
                         action: showAxisAction 
                     }
             
@@ -213,40 +206,27 @@ Item {
                         id: showGridBtn
                         width: 32; height: 32
                         checkable: true
-                        iconSource: "/usr/local/feather/ui/icons/grid.png"
+                        iconSource: "E:/Feather/iconsgrid.png"
                         action: showGridAction 
                     }
                 }
             }
-
-
 
         }
 
     } 
 
     /*
-    Viewport3D2 { 
+    Viewport3D { 
         id: viewport
         anchors.top: toolBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+    }
     */
-        /*
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            propagateComposedEvents: true
-        }
-        */
-    //}
-
-    //function updateGL() { viewport.updateGL() }
-
 
     Component.onCompleted: { 
         //editor.update(); updateGL()
     }
-
 }

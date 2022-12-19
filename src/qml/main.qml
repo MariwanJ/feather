@@ -22,15 +22,15 @@
  ***********************************************************************/
 
 import QtQuick 2.5
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.2
 import feather.scenegraph 1.0
 
 ApplicationWindow {
     id: window
-    width: 1200
-    height: 700
+    width: 1900
+    height: 1020 
     visible: true
     title: "Feather 0.1"
     //flags: Qt.FramelessWindowHint
@@ -47,7 +47,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: timeEditor.top
+        anchors.bottom: keyEditor.top
         orientation: Qt.Horizontal
 
         SceneGraphEditor{
@@ -90,6 +90,21 @@ ApplicationWindow {
 
     }
 
+    Item {
+        id: keyEditor
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: timeEditor.top
+        height: 200 
+
+        KeyframeEditor {
+            id: keyframeEditor
+            anchors.fill: parent
+            fieldModel: fields
+            properties: properties
+        }
+    }
+
     TimeEditor {
         id: timeEditor
         anchors.left: parent.left
@@ -111,9 +126,10 @@ ApplicationWindow {
     }
 
     // this is for catching key presses on the main window
+    /*
     Item {
         anchors.fill: parent
-        focus: true
+        focus: false 
 
         Keys.onPressed: {
             console.log("key pressed")
@@ -124,12 +140,24 @@ ApplicationWindow {
                 else
                     window.visibility = Window.FullScreen
                 event.accepted=true
-            }
+            } 
+            event.accepted=false
         }
     }
+    */
 
     Component.onCompleted: {
         //window.showFullScreen()        
+        keyframeEditor.startTimeChanged.connect(timeEditor.setStartTime)
+        keyframeEditor.endTimeChanged.connect(timeEditor.setEndTime)
+        keyframeEditor.currentTimeChanged.connect(timeEditor.setCurrentTime)
+        keyframeEditor.stime = timeEditor.spos
+        keyframeEditor.etime = timeEditor.epos
+        keyframeEditor.cpos = timeEditor.cpos
+        timeEditor.startTimeChanged.connect(keyframeEditor.setStartTime)
+        timeEditor.endTimeChanged.connect(keyframeEditor.setEndTime)
+        timeEditor.currentTimeChanged.connect(keyframeEditor.setCurrentTime)
+        sgEditor.statusChanged.connect(cmdLineId.command_message_changed)
     }
 
     //Material {}

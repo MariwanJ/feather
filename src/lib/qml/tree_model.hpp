@@ -28,7 +28,7 @@
 #include "field.hpp"
 #include "commands.hpp"
 
-class Leaf
+class FEATHER_API Leaf
 {
     public:
         explicit Leaf(const QList<QVariant> &data, Leaf *parentItem = 0);
@@ -58,7 +58,7 @@ class Leaf
 
 // TREE MODEL
 
-class TreeModel : public QAbstractItemModel
+class FEATHER_API TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -91,6 +91,7 @@ class TreeModel : public QAbstractItemModel
         Leaf* getLeaf(const QModelIndex& index) const;
         Q_INVOKABLE void removeNode(int uid, const QModelIndex &parent=QModelIndex());
         Q_INVOKABLE void clearTree(); // this is used to remove every node from the outliner
+
     protected:
         QHash<int,QByteArray> roleNames() const;
 

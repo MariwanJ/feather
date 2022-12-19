@@ -22,6 +22,7 @@
  ***********************************************************************/
 
 import QtQuick 2.3
+import feather.field 1.0
 
 Item {
     id: properties
@@ -67,6 +68,8 @@ Item {
         ListElement { name: "vertexType"; color: "#FF7F00" }
         ListElement { name: "meshType"; color: "#FF007F" }
         ListElement { name: "rgbType"; color: "#EDC9AF" }
+        ListElement { name: "nodeType"; color: "#FD5800" }
+        ListElement { name: "matrixType"; color: "#0F4D92" }
         // NODES
         ListElement { name: "cameraNode"; color: "#0F4D92" }
         ListElement { name: "lightNode"; color: "#EDC9AF" }
@@ -87,7 +90,7 @@ Item {
             if(colorProperties.get(i).name==name)
                 return colorProperties.get(i).color
         }
-        return "#FFFFFF"
+        return "#FF0000"
     }
 
     function setColor(name,color) {
@@ -98,4 +101,47 @@ Item {
         colorsChanged()
     }
 
+    function getFieldTypeColor(type) {
+        switch(type) {
+            case Field.Bool: return properties.getColor("boolType"); break;
+            case Field.BoolArray: return properties.getColor("boolType"); break;
+            case Field.Int: return properties.getColor("intType"); break;
+            case Field.IntArray: return properties.getColor("intType"); break;
+            //case Field.Float: return properties.getColor("floatType"); break;
+            //case Field.FloatArray: return properties.getColor("floatType"); break;
+            //case Field.Double: return properties.getColor("doubleType"); break;
+            //case Field.DoubleArray: return properties.getColor("doubleType"); break;
+            case Field.Real: return properties.getColor("doubleType"); break;
+            case Field.RealArray: return properties.getColor("doubleType"); break;
+            case Field.Vertex: return properties.getColor("vertexType"); break;
+            case Field.VertexArray: return properties.getColor("vertexType"); break;
+            case Field.Vector: return properties.getColor("vertexType"); break;
+            case Field.VectorArray: return properties.getColor("vertexType"); break;
+            case Field.Mesh: return properties.getColor("meshType"); break;
+            case Field.RGB: return properties.getColor("rgbType"); break;
+            case Field.RGBA: return properties.getColor("rgbType"); break;
+            case Field.Node: return properties.getColor("nodeType"); break;
+            case Field.NodeArray: return properties.getColor("nodeType"); break;
+            case Field.Matrix3x3: return properties.getColor("matrixType"); break;
+            case Field.Matrix4x4: return properties.getColor("matrixType"); break;
+            default: return "white";
+        }
+    }
+
+    function getKeyColor(fid) {
+        // generate a color based of the fid number
+        // for now we'll do this with a simple switch
+        switch(fid){
+            case 203: return "#FF0000"
+            case 204: return "#00FF00"
+            case 205: return "#0000FF"
+            case 206: return "#FF0000"
+            case 207: return "#00FF00"
+            case 208: return "#0000FF"
+            case 209: return "#FF0000"
+            case 210: return "#00FF00"
+            case 211: return "#0000FF"
+            default: return "#FFFF00"
+        }
+    }
 }

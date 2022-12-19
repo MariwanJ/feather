@@ -28,17 +28,16 @@
 #include "qml_deps.hpp"
 #include "field_model.hpp"
 
-#define NODE_WIDTH 100
-#define NODE_HEIGHT 40
+#define NODE_WIDTH 120
+#define NODE_HEIGHT 20
 #define CONNECTION_WIDTH 10
-#define CONNECTION_HEIGHT 12 
+#define CONNECTION_HEIGHT 10 
 
+class FEATHER_API SceneGraphEditor;
+class FEATHER_API SceneGraphNode;
+class FEATHER_API SceneGraphConnection;
 
-class SceneGraphEditor;
-class SceneGraphNode;
-class SceneGraphConnection;
-
-struct SGState {
+struct FEATHER_API SGState {
     // Source Node Info
     // This is used for when connection node fields together
     // and keeping track of the currently selected nodes
@@ -59,25 +58,24 @@ struct SGState {
 };
 
 
-struct MouseInfo {
+struct FEATHER_API MouseInfo {
         static int clickX;
         static int clickY;
 };
 
 
-class SceneGraphConnection : public QQuickPaintedItem
+class FEATHER_API SceneGraphConnection : public QQuickPaintedItem
 {
     Q_OBJECT
 
     public:
         enum Connection { In, Out };
 
-        SceneGraphConnection(QString name, int fid, SceneGraphNode* node, Connection type, QQuickItem* parent=0);
+        SceneGraphConnection(SceneGraphNode* node, Connection type, QQuickItem* parent=0);
         ~SceneGraphConnection();
         void paint(QPainter* painter);
         SceneGraphNode* node() { return m_node; };
         inline Connection type() { return m_type; };
-        inline unsigned int fid() { return m_fid; };
         inline void setSelected(bool s) { m_selected=s; };
 
     protected:
@@ -88,18 +86,16 @@ class SceneGraphConnection : public QQuickPaintedItem
         void mouseMoveEvent(QMouseEvent* event);
 
     signals:
-        void connClicked(Qt::MouseButton button, SceneGraphConnection::Connection conn);
+        void connClicked(Qt::MouseButton button, SceneGraphConnection::Connection conn, int x, int y);
 
     private:
-        QString m_name;
         bool m_selected;
         Connection m_type;
         QBrush m_connFillBrush;
         SceneGraphNode* m_node;
-        unsigned int m_fid;
 };
 
-class SceneGraphNode : public QQuickPaintedItem
+class FEATHER_API  SceneGraphNode : public QQuickPaintedItem
 {
     Q_OBJECT
 
@@ -107,20 +103,18 @@ class SceneGraphNode : public QQuickPaintedItem
         SceneGraphNode(int uid, int nid, QQuickItem* parent=0);
         ~SceneGraphNode();
         void paint(QPainter* painter);
-        void inConnectionPoint(unsigned int fid, QPointF& point);
-        void outConnectionPoint(unsigned int fid, QPointF& point);
-        SceneGraphConnection* inConnection(unsigned int fid);
-        SceneGraphConnection* outConnection(unsigned int fid);
-        std::vector<SceneGraphConnection*>& inConnections();
-        std::vector<SceneGraphConnection*>& outConnections();
+        void inConnectionPoint(QPointF& point);
+        void outConnectionPoint(QPointF& point);
+        SceneGraphConnection* inConnection();
+        SceneGraphConnection* outConnection();
         inline int nid() { return m_nid; };
         inline int uid() { return m_uid; }; /*! Node's unique id assigned by the scenegraph. */
  
     protected slots:
-        void ConnPressed(Qt::MouseButton button,SceneGraphConnection::Connection conn);
+        void ConnPressed(Qt::MouseButton button,SceneGraphConnection::Connection conn, int x, int y);
  
     signals:
-        void ConnClicked(Qt::MouseButton button, SceneGraphConnection::Connection conn, int uid, int nid);
+        void ConnClicked(Qt::MouseButton button, SceneGraphConnection::Connection conn, int x, int y, int uid, int nid);
         void nodePressed(Qt::MouseButton button, int uid, int nid);
 
     protected:
@@ -147,17 +141,14 @@ class SceneGraphNode : public QQuickPaintedItem
         int m_outConnCount;
         int m_connCount;
         int m_nodeHeight;
-        //SceneGraphConnection* m_pInConn;
-        //SceneGraphConnection* m_pOutConn;
-        std::vector<SceneGraphConnection*> m_pInConns;
-        std::vector<SceneGraphConnection*> m_pOutConns;
-        //FieldModel* m_pFieldNames;
+        SceneGraphConnection* m_pInConn;
+        SceneGraphConnection* m_pOutConn;
 };
 
 
 // Link
 
-class SceneGraphLink : public QQuickPaintedItem
+class FEATHER_API SceneGraphLink : public QQuickPaintedItem
 {
     Q_OBJECT
     
@@ -167,8 +158,6 @@ class SceneGraphLink : public QQuickPaintedItem
         void paint(QPainter* painter);
 
     private:
-        //SceneGraphNode* m_snode; // source node
-        //SceneGraphNode* m_tnode; // target node
         SceneGraphConnection* m_sconnection; // source connection
         SceneGraphConnection* m_tconnection; // target connection
 };
@@ -176,7 +165,7 @@ class SceneGraphLink : public QQuickPaintedItem
 
 // Editor
 
-class SceneGraphEditor : public QQuickPaintedItem
+class FEATHER_API SceneGraphEditor : public QQuickPaintedItem
 {
     Q_OBJECT
          Q_PROPERTY(FieldModel* connection READ connection WRITE setConnection NOTIFY connectionChanged)
@@ -198,6 +187,10 @@ class SceneGraphEditor : public QQuickPaintedItem
         Q_INVOKABLE bool connectNodes(); // this only works on selected connections in the SGState
         Q_INVOKABLE bool disconnectNodes(); // this only works on selected connections in the SGState
 
+        // connection calls
+        Q_INVOKABLE void setConnectionSource(unsigned int uid, unsigned int fid);
+        Q_INVOKABLE void setConnectionTarget(unsigned int uid, unsigned int fid);
+
         // connection 
         void setConnection(FieldModel* c) {
             if(m_connection!= c) {
@@ -211,7 +204,7 @@ class SceneGraphEditor : public QQuickPaintedItem
         inline int clickY() { return MouseInfo::clickY; };
 
     protected slots:
-        void ConnOption(Qt::MouseButton button, SceneGraphConnection::Connection conn, int uid, int nid);
+        void ConnOption(Qt::MouseButton button, SceneGraphConnection::Connection conn, int x, int y, int uid, int nid);
         void nodePressed(Qt::MouseButton button, int uid, int nid);
 
     protected:
@@ -228,6 +221,8 @@ class SceneGraphEditor : public QQuickPaintedItem
         void connectionChanged();
         void nodeSelection(int type, int uid, int nid);
         void updateSelection();
+        void connectorClicked(int button, int conn, int x, int y, int uid, int nid);
+        void statusChanged(int state, QString msg);
 
     private:
         void updateGraph();
@@ -237,7 +232,8 @@ class SceneGraphEditor : public QQuickPaintedItem
         int m_scale;
         int m_nodeWidth;
         int m_nodeHeight;
-
+        int m_nodeGapWidth; // horizontal distance between nodes
+        int m_nodeGapHeight; // vertical distance between nodes
         std::vector<SceneGraphNode*> m_nodes;
         std::vector<SceneGraphLink*> m_links;
         FieldModel* m_connection;

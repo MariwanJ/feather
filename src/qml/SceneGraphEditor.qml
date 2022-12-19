@@ -35,9 +35,14 @@ Rectangle {
     
     property Properties properties: Null
     property alias fieldModel: sg_editor.connection
+
+    signal nodeToBeRemoved(int uid)
+    signal statusChanged(int state, string msg)
  
     // Dialogs
     AddNodeDialog{ id: addNodeDialog; properties: sgWindow.properties }
+    
+    SceneGraphConnectionDialog { id: connectionDialog; properties: sgWindow.properties }
 
     // Actions
 
@@ -54,6 +59,7 @@ Rectangle {
         tooltip: "Remove selected node from scenegraph"
         onTriggered: {
             var uid = SceneGraph.selected_node()
+            sgWindow.nodeToBeRemoved(uid)
             SceneGraph.remove_node(uid)
             SceneGraph.nodesRemoved()
             SceneGraph.triggerUpdate()
@@ -103,28 +109,28 @@ Rectangle {
             ToolButton {
                 id: addNodeButton
                 width: 32; height: 32
-                iconSource: "/usr/local/feather/ui/icons/add_node.png"
+                iconSource: "e:/Featherui/icons/add_node.png"
                 action: addNode 
             }
 
             ToolButton {
                 id: deleteNodeButton
                 width: 32; height: 32
-                iconSource: "/usr/local/feather/ui/icons/delete_node.png"
+                iconSource: "e:/Featherui/icons/delete_node.png"
                 action: deleteNode 
             }
 
             ToolButton {
                 id: addConnectionButton
                 width: 32; height: 32
-                iconSource: "/usr/local/feather/ui/icons/add_connection.png"
+                iconSource: "e:/Featherui/icons/add_connection.png"
                 action: addConnection 
             }
 
             ToolButton {
                 id: deleteConnectionButton
                 width: 32; height: 32
-                iconSource: "/usr/local/feather/ui/icons/delete_connection.png"
+                iconSource: "e:/Featherui/icons/delete_connection.png"
                 action: deleteConnection 
             }
 
@@ -158,8 +164,9 @@ Rectangle {
       }
 
     function connectionButtonPressed(button,uid,nid,fid) {
-        sg_editor.connectionMousePressed(button,uid,nid,fid);
-        SceneGraph.select_node(0,uid,nid,fid);
+        //sg_editor.connectionMousePressed(button,uid,nid,fid);
+        //SceneGraph.select_node(0,uid,nid,fid);
+        connectionDialog.visible
     }
 
     function connectionButtonReleased(button,uid,nid,fid) {
@@ -179,9 +186,35 @@ Rectangle {
         var uid = SceneGraph.add_node(nid,name)
         //console.log("added node as uid: " + uid)
         var suid = SceneGraph.selected_node()
-        var p = SceneGraph.connect_nodes(suid,2,uid,1)
+        var p = SceneGraph.connect_nodes(suid,202,uid,201)
         //console.log("connection status was: " + p)
         SceneGraph.triggerUpdate()
+    }
+
+    function connectionClicked(button,connection,x,y,uid,nid) {
+        // close the previous connection dialog if it's still open
+        connectionDialog.visible = false
+        connectionDialog.x = x
+        connectionDialog.y = y
+        connectionDialog.uid = uid
+        connectionDialog.nid = nid
+        connectionDialog.connection = connection
+        connectionDialog.visible = true
+    }
+
+    function connectionSelection(uid,nid,fid,connection) {
+        //console.log("connectionSelection uid:",uid," nid:",nid," fid:",fid," connection:",connection)
+        if(connection == Field.In) {
+            sg_editor.setConnectionTarget(uid,fid)
+            SceneGraph.triggerUpdate()
+        } else {
+            sg_editor.setConnectionSource(uid,fid)
+            SceneGraph.triggerUpdate()
+        }
+    }
+
+    function statusTriggered(state,msg){
+        console.log("STATUS TRIGGERED: state:",state," msg:",msg)
     }
 
     Component.onCompleted: {
@@ -194,7 +227,10 @@ Rectangle {
         SceneGraph.updateGraph.connect(sg_editor.update_sg)
         SceneGraph.cleared.connect(sg_editor.update_sg)
         addNodeDialog.addNode.connect(add_node)
-
+        sg_editor.connectorClicked.connect(connectionClicked)
+        connectionDialog.fieldSelected.connect(connectionSelection)
+        // status changed
+        sg_editor.statusChanged.connect(statusTriggered)
     }
 
 }

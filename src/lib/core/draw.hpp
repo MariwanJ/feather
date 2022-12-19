@@ -32,7 +32,7 @@ namespace feather {
     namespace draw {
 
         struct Item {
-            enum Type { None, PerspCamera, OrthoCamera, Mesh, Line };
+            enum Type { None, PerspCamera, OrthoCamera, ShadedMesh, ComponentMesh, Line };
             Item(Type _type=None):type(_type){}; 
             Type type;
             unsigned int uid;
@@ -49,16 +49,36 @@ namespace feather {
             Type linetype;
         };
 
-        struct Mesh : public Item
+        struct ShadedMesh : public Item
         {
-            Mesh(unsigned int _fid) : Item(Item::Mesh),fid(_fid) {};
+            ShadedMesh(unsigned int _fid) : Item(Item::ShadedMesh),fid(_fid) {};
+            unsigned int fid;
+        };
+
+        struct ComponentMesh : public Item
+        {
+            ComponentMesh(unsigned int _fid) : Item(Item::ComponentMesh),fid(_fid) {};
             unsigned int fid;
         };
 
         struct PerspCamera : public Item
         {
-            PerspCamera(unsigned int _fovfid) : Item(Item::PerspCamera),fovfid(_fovfid) {};
+            PerspCamera(
+                    unsigned int _typefid,
+                    unsigned int _fovfid,
+                    unsigned int _nearfid,
+                    unsigned int _farfid
+                    ) :
+                Item(Item::PerspCamera),
+                typefid(_typefid),
+                fovfid(_fovfid),
+                nearfid(_nearfid),
+                farfid(_farfid) {};
+
+            unsigned int typefid;
             unsigned int fovfid;
+            unsigned int nearfid;
+            unsigned int farfid;
         };
 
         typedef std::vector<Item*> DrawItems;
@@ -73,10 +93,13 @@ namespace feather {
 #define ADD_LINE(__startpoint,__endpoint,__color,__type)\
     items.push_back(new draw::Line(__startpoint,__endpoint,__color,__type));
  
-#define ADD_MESH(__fid)\
-    items.push_back(new draw::Mesh(__fid));
+#define ADD_SHADED_MESH(__fid)\
+    items.push_back(new draw::ShadedMesh(__fid));
+  
+#define ADD_COMPONENT_MESH(__fid)\
+    items.push_back(new draw::ComponentMesh(__fid));
  
-#define ADD_PERSP_CAMERA(__fovfid)\
-    items.push_back(new draw::PerspCamera(__fovfid));
+#define ADD_PERSP_CAMERA(__typefid,__fovfid,__nearfid,__farfid)\
+    items.push_back(new draw::PerspCamera(__typefid,__fovfid,__nearfid,__farfid));
     
 #endif

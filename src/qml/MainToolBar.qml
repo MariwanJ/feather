@@ -144,28 +144,28 @@ ToolBar {
         anchors.left: parent.left
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/open.png"
+            iconSource: "E:/Feather/iconsopen.png"
             iconName: "open file"
             action: openAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/save.png"
+            iconSource: "E:/Feather/iconssave.png"
             iconName: "save file"
             action: saveAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/undo.png"
+            iconSource: "E:/Feather/iconsundo.png"
             iconName: "undo action"
             action: undoAction
         }
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/redo.png"
+            iconSource: "E:/Feather/iconsredo.png"
             iconName: "redo action"
             action: redoAction
         }
@@ -177,28 +177,28 @@ ToolBar {
         anchors.centerIn: parent
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/point_select.png"
+            iconSource: "E:/Feather/iconspoint_select.png"
             iconName: "point select"
              action: vertexSelectAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/edge_select.png"
+            iconSource: "E:/Feather/iconsedge_select.png"
             iconName: "edge select"
             action: edgeSelectAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/face_select.png"
+            iconSource: "E:/Feather/iconsface_select.png"
             iconName: "face select"
             action: faceSelectAction
         }
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/object_select.png"
+            iconSource: "E:/Feather/iconsobject_select.png"
             iconName: "object select"
             action: objectSelectAction
         }
@@ -212,35 +212,35 @@ ToolBar {
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/props.png"
+            iconSource: "E:/Feather/iconsprops.png"
             iconName: "properties"
             action: propertyAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/smooth_shade.png"
+            iconSource: "E:/Feather/iconssmooth_shade.png"
             iconName: "smooth shading"
             action: smoothShadeAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/ortho.png"
+            iconSource: "E:/Feather/iconsortho.png"
             iconName: "orthographic view"
             action: orthographicAction
         } 
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/grid.png"
+            iconSource: "E:/Feather/iconsgrid.png"
             iconName: "show grid"
             action: gridAction
         }
 
         ToolButton {
             width: 32; height: 32
-            iconSource: "/usr/local/feather/ui/icons/axis.png"
+            iconSource: "E:/Feather/iconsaxis.png"
             iconName: "show axis"
             action: axisAction
         }

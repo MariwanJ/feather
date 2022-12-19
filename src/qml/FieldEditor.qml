@@ -36,6 +36,7 @@ Item {
     //height: 500
     property Properties properties: Null
     property alias fieldModel: view.model
+    //focus: true
 
     Rectangle {
         id: nodeFrame
@@ -47,7 +48,8 @@ Item {
         border.color: "black"
         border.width: 1
         color: properties.getColor("windowBg")
- 
+        //focus: true
+
         // Node Title
         Rectangle {
             id: nodeTitle
@@ -78,9 +80,21 @@ Item {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.margins: 1
-            delegate: FieldEditorValue { properties: fieldEditor.properties; width: parent.width; uId: uid; nodeKey: nid; fieldKey: fid; fieldType: type; label: name }
-        }
+            focus: true
 
+            delegate: FieldEditorValue {
+                properties: fieldEditor.properties
+                width: parent.width
+                uidKey: uid
+                nidKey: nid
+                fidKey: fid
+                fieldType: type
+                label: name
+                // TODO - this is a temp fix to get rid of unwanted types showing up in the editor
+                visible: (type==Field.Mesh || type==Field.Matrix3x3 || type==Field.Matrix4x4 || type==Field.Node || type==Field.NodeArray || type==Field.RealArray || type==Field.IntArray) ? false : true
+                height: (type==Field.Mesh || type==Field.Matrix3x3 || type==Field.Matrix4x4 || type==Field.Node || type==Field.NodeArray || type==Field.RealArray || type==Field.IntArray) ? 0 : 15 
+            }
+        }
     }
  
     Rectangle {
@@ -112,6 +126,7 @@ Item {
                 font.bold: false 
                 font.pixelSize: 12
                 color: "black"
+                text: "base"
             }
         }
 
@@ -129,7 +144,7 @@ Item {
         var uid = SceneGraph.selected_node()
         var nid = SceneGraph.node_id(uid)
         nodeLabel.text = SceneGraph.node_name(uid)
-        fieldModel.addFields(uid,nid)
+        fieldModel.addFields(uid,nid,Field.In)
     }
 
     function updateColor() {

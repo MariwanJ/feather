@@ -48,6 +48,8 @@ namespace feather
         std::string (*name)();
         std::string (*description)();
         std::string (*author)();
+        status (*fields_init)(int,field::Fields&);
+        status (*update_properties)(int,field::Fields&);
         status (*do_it)(int,field::Fields&);
         //status (*draw_it)(int,draw::DrawItems&);
         bool (*node_exist)(int); // is there a node with the given type and id in this plugin
@@ -56,7 +58,7 @@ namespace feather
         status (*node_type)(int,node::Type&);
         bool (*node_icon)(int,std::string&); // name of icon image in ui/icons path
         status(*create_fields)(int,field::Fields&); // creates a new instance of the nodes fields which will get deleted by the scenegraph when the node is removed.
-        field::FieldBase* (*get_field)(int,int,field::Fields&);
+        //field::FieldBase* (*get_field)(int,int,field::Fields&);
         status (*get_fid_list)(int,field::connection::Type,field::Fields&,std::vector<field::FieldBase*>&);
         bool (*command_exist)(std::string cmd);
         status (*command)(std::string cmd, parameter::ParameterList);
@@ -64,7 +66,7 @@ namespace feather
         status (*parameter_type)(std::string, int, parameter::Type&);
     };
 
-    struct get_name {
+    struct FEATHER_API get_name {
         get_name(std::vector<PluginInfo>& list) : m_list(list) {};
         void operator()(PluginData n) { 
             PluginInfo info;
@@ -78,7 +80,7 @@ namespace feather
             std::vector<PluginInfo>& m_list; 
     };
 
-    struct get_fids {
+    struct  get_fids {
         get_fids(int nid, field::connection::Type conn, field::Fields& fields, std::vector<field::FieldBase*>& list) : m_nid(nid),m_conn(conn),m_fields(fields),m_list(list) {};
         void operator()(PluginData n) {
             if(n.node_exist(m_nid))
@@ -92,6 +94,46 @@ namespace feather
             field::connection::Type m_conn;
             field::Fields& m_fields;
             std::vector<field::FieldBase*>& m_list; 
+    };
+
+
+    // FIELD_INIT()
+
+    template <int _Id>
+    struct call_fields_inits{
+        static status exec(int id, field::Fields& fields) { return call_fields_inits<_Id-1>::exec(id,fields); };
+    };
+
+    template <> struct call_fields_inits<0> { static status exec(int id, field::Fields& fields) { return status(FAILED,"could not find node"); }; };
+
+    template <int _Id> status node_fields_init(field::Fields& fields) { return status(FAILED,"no node found"); };
+   
+    struct call_fields_init {
+        call_fields_init(int node,field::Fields& fields): m_node(node), m_fields(fields){};
+        void operator()(PluginData n) { if(n.node_exist(m_node)) { n.fields_init(m_node,m_fields); } };
+        private:
+            int m_node;
+            field::Fields& m_fields;
+    };
+
+
+    // UPDATE_PROPERTIES()
+
+    template <int _Id>
+    struct call_update_properties {
+        static status exec(int id, field::Fields& fields) { return call_update_properties<_Id-1>::exec(id,fields); };
+    };
+
+    template <> struct call_update_properties<0> { static status exec(int id, field::Fields& fields) { return status(FAILED,"could not find node"); }; };
+
+    template <int _Id> status node_update_properties(field::Fields& fields) { return status(FAILED,"no node found"); };
+   
+    struct call_update_property {
+        call_update_property(int node,field::Fields& fields): m_node(node), m_fields(fields){};
+        void operator()(PluginData n) { if(n.node_exist(m_node)) { n.update_properties(m_node,m_fields); } };
+        private:
+            int m_node;
+            field::Fields& m_fields;
     };
 
 
@@ -200,6 +242,7 @@ namespace feather
 
     // GET FIELD DATA
 
+    /*
     template <int _NodeId, int _FieldId>
     field::FieldBase* field_data(field::Fields& fields) { return NULL; };  
 
@@ -238,7 +281,7 @@ namespace feather
                     return NULL;
             }; 
         };
-
+    */
 
     // GET NODE'S FIDs
     // later connection direction needs to be added
@@ -357,17 +400,19 @@ namespace feather
 
     // PLUGIN MANAGER
 
-    class PluginManager
+    class FEATHER_API PluginManager
     {
         public:
             PluginManager();
             ~PluginManager();
             status load_plugins();
+            status fields_init(int node,field::Fields& fields); // this is called by the scenegraph
+            status update_properties(int node,field::Fields& fields); // this is called by the scenegraph
             status do_it(int node,field::Fields& fields); // this is called by the scenegraph
             //status draw_it(int node,draw::DrawItems& items); // this is called by the scenegraph
             status create_fields(int node, field::Fields& fields); // this will return a new instance of the node's fields 
             void get_draw_items(const int nid, draw::DrawItems& items);
-            field::FieldBase* get_fieldBase(int uid, int node, int field, field::Fields& fields);
+            //field::FieldBase* get_fieldBase(int uid, int node, int field, field::Fields& fields);
             status run_command(std::string cmd, parameter::ParameterList);
             status run_command_string(std::string str);
             int min_uid();
@@ -375,7 +420,7 @@ namespace feather
             status node_icon_file(int nid, std::string& file);
             status node_type(int nid, feather::node::Type& type);
             void loaded_plugins(std::vector<PluginInfo>& list);
-            status get_fid_list(int nid, field::connection::Type conn, field::Fields& fields, std::vector<field::FieldBase*>& list);
+            status  get_fid_list(int nid, field::connection::Type conn, field::Fields& fields, std::vector<field::FieldBase*>& list);
 
         private:
             bool add_parameter_to_list(std::string cmd, int key, std::string val, parameter::ParameterList& list);
@@ -387,10 +432,12 @@ namespace feather
 
 } // namespace feather
 
-#define C_PLUGIN_WRAPPER()\
+#define  C_PLUGIN_WRAPPER()\
     std::string name();\
     std::string description();\
     std::string author();\
+    feather::status fields_init(int, feather::field::Fields&);\
+    feather::status update_properties(int, feather::field::Fields&);\
     feather::status do_it(int, feather::field::Fields&);\
     /*feather::status draw_it(int, feather::draw::DrawItems&);*/\
     bool node_exist(int);\
@@ -399,7 +446,7 @@ namespace feather
     feather::status node_type(int,feather::node::Type&);\
     bool node_icon(int,std::string&);\
     feather::status create_fields(int, feather::field::Fields&);\
-    feather::field::FieldBase* get_field(int,int,feather::field::Fields&);\
+    /*feather::field::FieldBase* get_field(int,int,feather::field::Fields&);*/\
     feather::status get_fid_list(int,feather::field::connection::Type,feather::field::Fields&,std::vector<feather::field::FieldBase*>&);\
     bool command_exist(std::string cmd);\
     feather::status command(std::string cmd, feather::parameter::ParameterList);\
@@ -407,13 +454,24 @@ namespace feather
     feather::status parameter_type(std::string cmd, int key, feather::parameter::Type& type);\
 
 
-#define PLUGIN_INIT(__name,__description,__author,startnode,endnode)\
+#define  PLUGIN_INIT(__name,__description,__author,startnode,endnode)\
     /* plugin name */\
     std::string name() { return __name; };\
     /* plugin description */\
     std::string description() { return __description; };\
     /* plugin name */\
     std::string author() { return __author; };\
+    \
+    /* call node update_properties() */\
+    feather::status fields_init(int id, feather::field::Fields& fields) {\
+        return call_fields_inits<MAX_NODE_ID>::exec(id,fields);\
+    };\
+    \
+    \
+    /* call node update_properties() */\
+    feather::status update_properties(int id, feather::field::Fields& fields) {\
+        return call_update_properties<MAX_NODE_ID>::exec(id,fields);\
+    };\
     \
     /* call node do_it() */\
     feather::status do_it(int id, feather::field::Fields& fields) {\
@@ -456,9 +514,11 @@ namespace feather
     };\
     \
     /* find the node's field */\
+    /*
     feather::field::FieldBase* get_field(int nid, int fid, field::Fields& fields) {\
-        return find_node_field<startnode,endnode,50>::exec(nid,fid,fields);\
+        return find_node_field<startnode,endnode,800>::exec(nid,fid,fields);\
     };\
+    */\
     /* find the node's fid's*/\
     feather::status get_fid_list(int nid, feather::field::connection::Type conn, feather::field::Fields& fields, std::vector<feather::field::FieldBase*>& list) {\
         find_node_fid_list<startnode,endnode>::exec(nid,conn,fields,list);\

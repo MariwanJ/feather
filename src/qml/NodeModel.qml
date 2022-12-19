@@ -35,7 +35,7 @@ ListModel {
     //ListElement { text: "Deformer"; type: Node.Deformer }
     // Manipulator
     ListElement { text: "Time"; nid: 4; type: Node.Time }
-    ListElement { text: "Transform"; nid: 7; type: Node.Manipulator }
+    //ListElement { text: "Transform"; nid: 7; type: Node.Manipulator }
     // Tool
     ListElement { text: "Multiply"; nid: 5; type: Node.Tool }
     ListElement { text: "Divide"; nid: 6; type: Node.Tool }
@@ -45,7 +45,18 @@ ListModel {
     // Curve
     //ListElement { text: "Curve"; type: Node.Curve }
     // Polygon
-    ListElement { text: "PolygonShape"; nid: 320; type: Node.Polygon }
-    ListElement { text: "PolygonPlane"; nid: 321; type: Node.Polygon }
-    ListElement { text: "PolygonCube"; nid: 322; type: Node.Polygon }
+    ListElement { text: "Shape"; nid: 320; type: Node.Polygon }
+    ListElement { text: "Plane"; nid: 321; type: Node.Polygon }
+    ListElement { text: "Cube"; nid: 322; type: Node.Polygon }
+    ListElement { text: "SubDiv"; nid: 323; type: Node.Polygon }
+    ListElement { text: "Mesh"; nid: 324; type: Node.Polygon }
+
+    // ANIMATION PLUGIN
+    ListElement { text: "Track"; nid: 420; type: Node.Animation }
+    ListElement { text: "Bone"; nid: 421; type: Node.Animation }
+    ListElement { text: "Morph"; nid: 426; type: Node.Animation }
+
+    // DEFORMER PLUGIN
+    ListElement { text: "Cluster"; nid: 440; type: Node.Deformer}
+
 }

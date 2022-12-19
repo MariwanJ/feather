@@ -4,7 +4,7 @@
  *
  * Description: Holds the attribute value inside the node.
  *
- * Copyright (C) 2015 Richard Layman, rlayman2000@yahoo.com 
+ * Copyright (C) 2015 Richard Layman, rlayman2000@yahoo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,123 +24,174 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
-namespace feather 
+#include <vector>
+#include <string>
+#include <iostream>
+#include "deps.hpp"
+
+namespace feather
 {
-  
-    namespace field
-    {
-        namespace connection
-        {
-            enum Type {
-                In,
-                Out
-            };
-        } // namespace connection
+	namespace field
+	{
+		namespace connection
+		{
+			enum Type {
+				In,
+				Out
+			};
+		} // namespace connection
 
-        enum Type {
-            N=0,
-            Bool=1,
-            Int=2,
-            Float=3,
-            Double=4,
-            Real=5,
-            Vertex=6,
-            Vector=7,
-            Mesh=8,
-            RGB=9,
-            RGBA=10,
-            BoolArray=11,
-            IntArray=12,
-            FloatArray=13,
-            VertexArray=14,
-            VectorArray=15,
-            RGBArray=16,
-            RGBAArray=17,
-            Time=18,
-            Node=19,
-            START=20
-        };
+		struct Connection {
+			unsigned int puid; // parent node id
+			unsigned int pnid; // parent node type
+			unsigned int pfid; // parent field
+		};
 
-        // TODO
-        // The puid will change when nodes are removed, so it's need's to be updated
-        struct FieldBase
-        {
-            FieldBase():update(true),connected(false),puid(0),pf(0),type(0){};
-            int id;
-            bool update; // this is used to optimize the scenegraph update process - the sg won't call a node's do_it unless one of it's input's fields update flags are set to true.
-            // Connections
-            // If nothing is connected to this field, both puid and pf are 0
-            int conn_type;
-            bool connected; // is the field connected
-            int puid; // uid of the node connected to this field
-            int pn; // node key of the connected field
-            int pf; // field key of connected node
-            int type;
-        };
+		enum Type {
+			N = 0,
+			Bool = 1,
+			Int = 2,
+			Float = 3,
+			Double = 4,
+			Real = 5,
+			Vertex = 6,
+			Vector = 7,
+			Mesh = 8,
+			RGB = 9,
+			RGBA = 10,
+			BoolArray = 11,
+			IntArray = 12,
+			RealArray = 13,
+			VertexArray = 14,
+			VectorArray = 15,
+			RGBArray = 16,
+			RGBAArray = 17,
+			Time = 18,
+			Node = 19,
+			NodeArray = 20,
+			Matrix3x3 = 21,
+			Matrix4x4 = 22,
+			VertexIndiceWeight = 23,
+			VertexIndiceGroupWeight = 24,
+			VertexIndiceWeightArray = 25,
+			VertexIndiceGroupWeightArray = 26,
+			MeshArray = 27,
+			Key = 28,
+			KeyArray = 29,
+			CurvePoint2D = 30,
+			CurvePoint3D = 31,
+			CurvePoint2DArray = 32,
+			CurvePoint3DArray = 33,
+			START = 34
+		};
 
-        //template <typename _Type, int _Conn>
-        template <typename _Type>
-        struct Field : public FieldBase
-        {
-            Field(int _type=0){};//{ conn_type=_Conn; };
-            //Field(int _type=0):conn(_Conn){ };
-            //typedef _Type type;
-            //int conn;
-            _Type value; // this is the field's value if nothing is connected to it
-        };
+		// TODO
+		// The puid will change when nodes are removed, so it's need's to be updated
+		class FEATHER_API FieldBase
+		{
+		public:
+			FieldBase() : id(0), update(true), conn_type(0), type(0), locked(false) {
+				connections.clear();
+			};
+			int id;
+			bool update; // this is used to optimize the scenegraph update process - the sg won't call a node's do_it unless one of it's input's fields update flags are set to true.
+			bool locked; // this will lock down the current value so that it can't be changed
+			// Connections
+			int conn_type;
+			std::vector<Connection> connections; // this is a vector for array types
+			int type;
+			int connection_count() {
+				try {
+					std::cout << "connection size for " << id << " is " << connections.size() << std::endl;
+					return connections.size();
+				}
+				catch (int i) {
+					std::cout << " the integer exception was caught, with value: " << i << '\n';
+					return 0;
+				}
+			};
+			//This was wrong. Changed by MARIWAN
+			bool connected() {
+				try {
+					return (!connection_count()) ? false : true;
+				}
+				catch (int i)
+				{
+					std::cout << " the integer exception was caught, with value: " << i << '\n';
+					return false;
+				}
+			};
+		};
 
+		//template <typename _Type, int _Conn>
+		template <typename _Type>
+		struct Field : public FieldBase
+		{
+			Field(int _type = 0) {};//{ conn_type=_Conn; };
+			_Type value; // this is the field's value if nothing is connected to it
+		};
 
-        typedef std::vector<FieldBase*> Fields;
+		typedef std::vector<FieldBase*> Fields;
 
+		// CHECK CONNECTION
 
-        // CHECK CONNECTION
+		template <int _Type1, int _Type2>
+		static bool can_connect() { return false; };
 
+		// NOTE!!!!
+		// THIS IS INCOMPLETE!!!!
+		// I need to add all the instances for each type.
+		// Currently this is just a brief list for testing.
+		template <> bool can_connect<Bool, Bool>() { return true; };
+		template <> bool can_connect<Bool, BoolArray>() { return true; };
+		template <> bool can_connect<Int, Int>() { return true; };
+		template <> bool can_connect<Int, IntArray>() { return true; };
+		template <> bool can_connect<Double, Double>() { return true; };
+		template <> bool can_connect<Float, Float>() { return true; };
+		template <> bool can_connect<Real, Real>() { return true; };
+		template <> bool can_connect<Real, RealArray>() { return true; };
+		template <> bool can_connect<Mesh, Mesh>() { return true; };
+		template <> bool can_connect<Mesh, MeshArray>() { return true; };
+		template <> bool can_connect<Node, Node>() { return true; };
+		template <> bool can_connect<Node, NodeArray>() { return true; };
+		template <> bool can_connect<Time, Time>() { return true; };
+		template <> bool can_connect<Matrix3x3, Matrix3x3>() { return true; };
+		template <> bool can_connect<Matrix4x4, Matrix4x4>() { return true; };
+		template <> bool can_connect<Key, Key>() { return true; };
+		template <> bool can_connect<Key, KeyArray>() { return true; };
+		template <> bool can_connect<CurvePoint2D, CurvePoint2D>() { return true; };
+		template <> bool can_connect<CurvePoint2D, CurvePoint2DArray>() { return true; };
+		template <> bool can_connect<CurvePoint3D, CurvePoint3D>() { return true; };
+		template <> bool can_connect<CurvePoint3D, CurvePoint3DArray>() { return true; };
 
-        template <int _Type1, int _Type2>
-        static bool can_connect() { return false; };
+		template <int _Type1, int _Type2>
+		struct can_types_connect {
+			static bool exec(int t1, int t2) {
+				if (t1 == _Type1 && t2 == _Type2)
+					return can_connect<_Type1, _Type2>();
+				else {
+					if (t2 == _Type2)
+						return can_types_connect<_Type1 - 1, _Type2>::exec(t1, t2);
+					else
+						return can_types_connect<_Type1, _Type2 - 1>::exec(t1, t2);
+				}
+			};
+		};
 
-        // NOTE!!!!
-        // THIS IS INCOMPLETE!!!!
-        // I need to add all the instances for each type.
-        // Currently this is just a brief list for testing.
-        template <> bool can_connect<Bool,Bool>() { return true; };
-        template <> bool can_connect<Int,Int>() { return true; };
-        template <> bool can_connect<Double,Double>() { return true; };
-        template <> bool can_connect<Float,Float>() { return true; };
-        template <> bool can_connect<Real,Real>() { return true; };
-        template <> bool can_connect<Mesh,Mesh>() { return true; };
-        template <> bool can_connect<Node,Node>() { return true; };
-        template <> bool can_connect<Time,Time>() { return true; };
-       
-        template <int _Type1, int _Type2>
-        struct can_types_connect {
-            static bool exec(int t1, int t2) {
-                if(t1==_Type1 && t2==_Type2)
-                    return can_connect<_Type1,_Type2>();
-                else {
-                    if(t2==_Type2) 
-                        return can_types_connect<_Type1-1,_Type2>::exec(t1,t2);
-                    else
-                        return can_types_connect<_Type1,_Type2-1>::exec(t1,t2);
-                }
-            };
-        };
-   
-        template <int _Type> struct can_types_connect<_Type,N> {
-            static bool exec(int t1, int t2) { return false; };
-        };
- 
-        template <int _Type> struct can_types_connect<N,_Type> {
-            static bool exec(int t1, int t2) { return false; };
-        };
+		template <int _Type> struct can_types_connect<_Type, N> {
+			static bool exec(int t1, int t2) { return false; };
+		};
 
-    } // namespace field
+		template <int _Type> struct can_types_connect<N, _Type> {
+			static bool exec(int t1, int t2) { return false; };
+		};
+	} // namespace field
 
 #define ADD_FIELD_TO_NODE(__node,__type,__type_enum,__connection,__default_value,__field_key)\
     namespace feather {\
         template <> struct add_fields<__node,__field_key> {\
             static status exec(field::Fields& fields) {\
-                 field::Field<__type>* f = new field::Field<__type>();\
+                field::Field<__type>* f = new field::Field<__type>();\
                 f->id=__field_key;\
                 f->value=__default_value;\
                 f->type=__type_enum;\
@@ -149,33 +200,40 @@ namespace feather
                 return add_fields<__node,__field_key-1>::exec(fields);\
             };\
         };\
-\
+        \
+        /*\
         template <> field::FieldBase* field_data<__node,__field_key>(field::Fields& fields)\
         {\
-            /*This is a cheap easy way to get FieldBase*\
-            But it's needs to be changed later so we\
-            don't have to scan the field every time\
-            to get the pointer.*/\
             for(uint i=0; i < fields.size(); i++) {\
                 if(fields.at(i)->id == __field_key){\
                     return fields.at(i);\
                 }\
             }\
-            /*std::cout << "never found matching key in field_data\n";*/\
             return NULL;\
         };\
- \
+        \
         template <> struct find_field<__node,__field_key> {\
             static field::FieldBase* exec(int fid, field::Fields& fields) {\
-                /*std::cout << "find field - node:" << __node << ", fid:" << fid << ", field:" << __field_key << std::endl;*/\
                 if(fid==__field_key){\
                     return field_data<__node,__field_key>(fields);\
                 }else\
                     return find_field<__node,__field_key-1>::exec(fid,fields);\
             };\
         };\
+        */\
     }
+} // namespace feather
 
-} // namespace feather 
+#define GET_FIELD_DATA(__key,__type,__name,__conn)\
+    field::Field<__type> *__name;\
+    for(auto f : fields){ if(f->id==__key){ __name = static_cast<field::Field<__type>*>(f); } }\
+    if(__conn == field::connection::In && __name->connections.size()){\
+        __name->value = static_cast<field::Field<__type>*>(plugin::get_node_field_base(__name->connections.at(0).puid,__name->connections.at(0).pfid))->value;\
+        __name->update = static_cast<field::Field<__type>*>(plugin::get_node_field_base(__name->connections.at(0).puid,__name->connections.at(0).pfid))->update;\
+    }\
+
+#define GET_FIELD_ARRAY_DATA(__key,__type,__name,__conn)\
+    field::Field<__type> *__name;\
+    for(auto f : fields){ if(f->id==__key){ __name = static_cast<field::Field<__type>*>(f); } }\
 
 #endif
