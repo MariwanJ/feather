@@ -2,18 +2,15 @@ project(feather_plugin)
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(BOOST_INCLUDE_DIR  "c:/Boost")
-
 set(GLUT_INCLUDE_DIR  "e:\\TEMP\\venders\\freeglut\\include")
-set(GLUT_glut_LIBRARY_DEBUG  "e:\\TEMP\\venders\\freeglut\\lib")
-set(GLUT_glut_LIBRARY_RELEASE  "e:\\TEMP\\venders\\freeglut\\lib")
-set(Boost_DIR "e:\\Boost\\boost")
+set(GLUT_glut_LIBRARY_DIR  "e:\\TEMP\\venders\\freeglut\\lib\\x64")
 
 set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
-set(dlfcn-win32_LIBRARY_DEBUG  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
+set(dlfcn-win32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
 set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
-set (BOOST_INCLUDE_DIR ""c:/Boost")
-set (BOOST_INCLUDE_DIR ""c:/Boost")
+set(BOOST_INCLUDE_DIR  "c:/Boost")
+set (SPECIAL_BOOST_LIBRARY_DIR "C:/Boost/lib64-msvc-14.2")
+
 FIND_PACKAGE(Boost COMPONENTS filesystem system REQUIRED)
 
 
@@ -31,14 +28,18 @@ INCLUDE_DIRECTORIES(
     ${feather_core_SOURCE_DIR}
     ${GLUT_INCLUDE_DIR}
     ${dlfcn-win32_INCLUDE_DIR}
-    ${BOOST_INCLUDE_DIR}
-)
+    ${BOOST_INCLUDE_DIR})
 
-LINK_DIRECTORIES(${feather_core_BINARY_DIR})
+LINK_DIRECTORIES(${feather_core_BINARY_DIR}
+${GLUT_glut_LIBRARY_DIR}
+${dlfcn-win32_LIBRARY_DIR}
+${SPECIAL_BOOST_LIBRARY_DIR}
+)
 
 LINK_LIBRARIES(${feather_core})
 
 ADD_LIBRARY(feather_plugin SHARED ${feather_plugin_SRCS})
+
 
 SET_TARGET_PROPERTIES(feather_plugin
     PROPERTIES
@@ -57,7 +58,7 @@ SET(feather_plugin_HDRS
 )
 
 INSTALL(FILES ${feather_plugin_HDRS}
-    DESTINATION /usr/include/feather)
+    DESTINATION e:/Feather/include)
 
 INSTALL(TARGETS feather_plugin
-    LIBRARY DESTINATION /usr/lib64/feather)
+    LIBRARY DESTINATION e:/Feather/lib)

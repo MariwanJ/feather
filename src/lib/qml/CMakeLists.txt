@@ -4,27 +4,16 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(GLUT_INCLUDE_DIR  "e:\\TEMP\\venders\\freeglut\\include")
-set(GLUT_glut_LIBRARY_DEBUG  "e:\\TEMP\\venders\\freeglut\\lib")
-set(GLUT_glut_LIBRARY_RELEASE  "e:\\TEMP\\venders\\freeglut\\lib")
-set(Boost_DIR "e:\\Boost\\boost")
+set(GLUT_glut_LIBRARY_DIR  "e:\\TEMP\\venders\\freeglut\\freeglut\\lib\\x64")
+set(Boost_DIR "c:\\Boost\\boost")
+set (SPECIAL_BOOST_LIBRARY_DIR "C:/Boost/lib64-msvc-14.2")
 
 set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
-set(dlfcn-win32_LIBRARY_DEBUG  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
+set(dlfcn-win32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
 set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
 set(BOOST_DIR  "c:/Boost")
 set (BOOST_INCLUDE_DIR "c:/Boost")
 
-#SET(CMAKE_CXX_LINK_FLAGS "-lvulkan")
-#SET(CMAKE_CXX_LINK_FLAGS "-lassimp")
-#SET(CMAKE_CXX_LINK_FLAGS "-lxcb")
-
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_USE_PLATFORM_XCB_KHR")
-
-#MESSAGE(STATUS ${VULKAN_LIB})
-
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -DVK_PROTOTYPES -D_USE_MATH_DEFINES")
-
-#SET(CMAKE_AUTOMOC_RELAX_MODE ON)
 add_definitions( -DFEATHER_PLATFORM_WINDOWS=1 -DFEATHER_BUILD_DLL=1)
 
 ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
@@ -37,19 +26,6 @@ FIND_PACKAGE(Boost COMPONENTS filesystem system REQUIRED)
 #SET(QT_USE_QTOPENGL TRUE)
 
 SET(feather_qml_SRCS
-    # vulkan
-    #tools.cpp
-    #debug.cpp
-    #node.cpp
-    #axis.cpp
-    #grid.cpp
-    #mesh.cpp
-    #pointlight.cpp
-    #pipelines.cpp
-    #viewport4.cpp
-    
-    # viewport
-    #viewport3.cpp
     qml_status.cpp
     viewport.cpp
 
@@ -74,16 +50,23 @@ INCLUDE_DIRECTORIES(${feather_core_SOURCE_DIR}
     ${Qt5Qml_INCLUDE_DIRS}
     ${Qt5Quick_INCLUDE_DIRS}
     ${Qt5Quick_INCLUDE_DIRS}
-    ${GLUT_INCLUDE_DIR}     ${dlfcn-win32_INCLUDE_DIR}    ${BOOST_INCLUDE_DIR})
+    ${GLUT_INCLUDE_DIR}     
+    ${dlfcn-win32_INCLUDE_DIR}  
+    ${BOOST_INCLUDE_DIR})
 
 LINK_DIRECTORIES(${feather_core_BINARY_DIR}
-    ${feather_plugin_BINARY_DIR})
+    ${feather_plugin_BINARY_DIR}
+    ${GLUT_glut_LIBRARY_DIR}
+    ${dlfcn-win32_LIBRARY_DIR}
+    ${SPECIAL_BOOST_LIBRARY_DIR}
+    )
 
-LINK_LIBRARIES(feather_core feather_plugin)
+LINK_LIBRARIES(feather_core feather_plugin freeglut dl)
 
 ADD_DEFINITIONS(${Qt5Widgets_DEFINITIONS}
     ${Qt5Qml_DEFINITIONS}
     ${Qt5Quick_DEFINITIONS}
+
 )
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
@@ -99,11 +82,12 @@ SET(feather_qml_LIBS
  ${OPENGL_LIBRARIES}
  ${QT5Widgets_LIBRARIES}
  ${QT5Qml_LIBRARIES}
- ${QT5Quick_LIBRARIES})
+ ${QT5Quick_LIBRARIES}
+  )
 
 TARGET_LINK_LIBRARIES(feather_qml ${feather_qml_LIBS})
 
-SET(CMAKE_CXX_FLAGS "-IE:/Boost")
+SET(CMAKE_CXX_FLAGS "-Ic:/Boost")
 
 SET_TARGET_PROPERTIES(feather_qml
     PROPERTIES

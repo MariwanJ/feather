@@ -1,25 +1,25 @@
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(GLUT_INCLUDE_DIR  "e:\\TEMP\\venders\\freeglut\\include")
-set(GLUT_glut_LIBRARY_DEBUG  "e:\\TEMP\\venders\\freeglut\\lib")
-set(GLUT_glut_LIBRARY_RELEASE  "e:\\TEMP\\venders\\freeglut\\lib")
-set(Boost_DIR "e:\\Boost\\boost")
+set(GLUT_glut_LIBRARY_DIR  "e:\\TEMP\\venders\\freeglut\\lib\\x64")
+
 
 set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
-set(dlfcn-win32_LIBRARY_DEBUG  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
+set(dlfcn-win32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
 set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
 set(BOOST_INCLUDE_DIR  "c:/Boost")
+set (SPECIAL_BOOST_LIBRARY_DIR "C:/Boost/lib64-msvc-14.2")
+set(Boost_DIR "c:\\Boost\\boost")
 
+#SET(CMAKE_CXX_LINK_FLAGS "-lvulkan")
+#SET(CMAKE_CXX_LINK_FLAGS "-lassimp")
+#SET(CMAKE_CXX_LINK_FLAGS "-lxcb")
 
-SET(CMAKE_CXX_LINK_FLAGS "-lvulkan")
-SET(CMAKE_CXX_LINK_FLAGS "-lassimp")
-SET(CMAKE_CXX_LINK_FLAGS "-lxcb")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_USE_PLATFORM_XCB_KHR")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_USE_PLATFORM_XCB_KHR")
-
-MESSAGE(STATUS ${VULKAN_LIB})
+#MESSAGE(STATUS ${VULKAN_LIB})
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -DVK_PROTOTYPES -D_USE_MATH_DEFINES")
 
@@ -56,6 +56,9 @@ INCLUDE_DIRECTORIES(${feather_core_SOURCE_DIR}
 
 LINK_DIRECTORIES(${feather_core_BINARY_DIR}
     ${feather_qml_BINARY_DIR}
+    ${GLUT_glut_LIBRARY_DIR}
+    ${dlfcn-win32_LIBRARY_DIR}
+    ${SPECIAL_BOOST_LIBRARY_DIR}
 )
 
 LINK_LIBRARIES(feather_qml feather_core)
@@ -102,7 +105,7 @@ SET_TARGET_PROPERTIES(feather
     CMAKE_CXX_STANDARD_REQUIRED ON
 )
 
-TARGET_LINK_LIBRARIES(feather ${feather_LIBS})
+TARGET_LINK_LIBRARIES(feather ${feather_LIBS} freeglut)
 
 QT5_USE_MODULES(feather Widgets Core Gui Qml Quick)
 
