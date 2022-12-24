@@ -42,7 +42,7 @@ namespace feather
         std::string author;
     };
 
-    struct PluginData {
+     struct FEATHER_API PluginData {
         std::string path;
         void *handle;
         std::string (*name)();

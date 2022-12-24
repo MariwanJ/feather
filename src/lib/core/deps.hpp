@@ -73,7 +73,7 @@
 //#include <GL/gl_mangle.h>
 
 // boost
-#include <boost/assert.hpp>
+#include <c:/Boost/boost/assert.hpp>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
