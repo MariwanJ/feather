@@ -3,16 +3,15 @@ PROJECT(feather_vulture)
 #SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(BOOST_INCLUDE_DIR  "c:/Boost")
+set(BOOST_INCLUDE_DIR  "c:\\Boost")
 
 set(GLUT_INCLUDE_DIR  "e:\\TEMP\\venders\\freeglut\\include")
-set(GLUT_glut_LIBRARY_DEBUG  "e:\\TEMP\\venders\\freeglut\\lib")
-set(GLUT_glut_LIBRARY_RELEASE  "e:\\TEMP\\venders\\freeglut\\lib")
+set(GLUT_glut_LIBRARY_DIR  "e:\\TEMP\\venders\\freeglut\\lib\\x64")
 set(Boost_DIR "e:\\Boost\\boost")
 
-set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
-set(dlfcn-win32_LIBRARY_DEBUG  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
-set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
+set(DLFC_WIN32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
+set(DLFC_WIN32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
+set(DLFC_WIN32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
 
 
 FIND_PACKAGE(PythonLibs REQUIRED)
@@ -27,9 +26,9 @@ add_definitions( -DFEATHER_PLATFORM_WINDOWS=1 -DFEATHER_BUILD_DLL=1)
 
 SET(CMAKE_CXX_LINK_FLAGS "-lvulkan")
 #SET(CMAKE_CXX_LINK_FLAGS "-lassimp")
-SET(CMAKE_CXX_LINK_FLAGS "-lxcb")
+#SET(CMAKE_CXX_LINK_FLAGS "-lxcb")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVK_USE_PLATFORM_XCB_KHR")
 
@@ -80,7 +79,7 @@ INCLUDE_DIRECTORIES(${feather_core_SOURCE_DIR}
  #${Qt5Core_INCLUDE_DIRS}
  #${Qt5Widgets_INCLUDE_DIRS}
  ${GLUT_INCLUDE_DIR} 
- ${dlfcn-win32_INCLUDE_DIR}
+ ${DLFC_WIN32_INCLUDE_DIR}
  ${BOOST_DIR})
  
 LINK_DIRECTORIES(${feather_core_BINARY_DIR}
@@ -102,7 +101,6 @@ LINK_LIBRARIES(feather_core feather_plugin)
 
 ADD_LIBRARY(feather_vulture SHARED ${feather_vulture_SRCS})
 TARGET_LINK_LIBRARIES(feather_vulture "-lvulkan" "-lboost_system" ${PTHREAD} ${pyvulture_LIBS})
-#TARGET_LINK_LIBRARIES(pyvulture "-lvulkan" ${PTHREAD} ${PYTHON_LIBRARIES} feather_vulture)
 
 
 SET_TARGET_PROPERTIES(feather_vulture

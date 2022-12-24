@@ -30,7 +30,7 @@ INCLUDE_DIRECTORIES(${feather_core_SOURCE_DIR})
 LINK_DIRECTORIES(${feather_core_BINARY_DIR})
 
 ADD_LIBRARY(feather_vulkan SHARED ${feather_vulkan_SRCS})
-TARGET_LINK_LIBRARIES(feather_vulkan "-lvulkan" ${PTHREAD})
+TARGET_LINK_LIBRARIES(feather_vulkan "-lvulkan" ${PTHREAD} freeglut.lib dl.lib)
 
 SET_TARGET_PROPERTIES(feather_vulkan
     PROPERTIES

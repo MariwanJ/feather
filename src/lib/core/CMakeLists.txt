@@ -4,21 +4,20 @@ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(BOOST_INCLUDE_DIR  "c:/Boost")
 
-set (SPECIAL_BOOST_LIBRARY_DIR "C:/Boost/lib64-msvc-14.2")
+set (SPECIAL_BOOST_LIBRARY_DIR "C:\\Boost\\lib64-msvc-14.2")
 set(GLUT_INCLUDE_DIR  "e:\\TEMP\\venders\\freeglut\\include")
 set(GLUT_glut_LIBRARY_DIR  "e:\\TEMP\\venders\\freeglut\\lib\\x64")
 set(Boost_DIR "C:\\Boost\\boost")
-set (SPECIAL_BOOST_LIBRARY_DIR "C:/Boost/lib64-msvc-14.2")
 
-set(dlfcn-win32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
-set(dlfcn-win32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
-set(dlfcn-win32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
+set(DLFCN_WIN32_INCLUDE_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\include")
+set(DLFCN_WIN32_LIBRARY_DIR  "e:\\TEMP\\venders\\dlfcn-win32\\lib")
+set(DLFCN_WIN32_ROOT_DIR  "e:\\TEMP\\venders\\dlfcn-win32")
 
 
 FIND_PACKAGE(Boost COMPONENTS filesystem system REQUIRED)
 FIND_PACKAGE(Qt5OpenGL REQUIRED)
 FIND_PACKAGE(GLUT REQUIRED)
-FIND_PACKAGE(dlfcn-win32 REQUIRED)
+#FIND_PACKAGE(DLFCN_WIN32 REQUIRED)
 
 SET(QT_USE_QTOPENGL TRUE)
 
@@ -34,13 +33,13 @@ SET_SOURCE_FILES_PROPERTIES(${feather_core_SRCS}
 
 INCLUDE_DIRECTORIES(${BOOST_INCLUDE_DIRS} 
         ${GLUT_INCLUDE_DIR}
-        ${dlfcn-win32_INCLUDE_DIR}
+        ${DLFCN_WIN32_INCLUDE_DIR}
             ${QtOpenGL_INCLUDE_DIRS}
             ${BOOST_INCLUDE_DIR})
 
 LINK_DIRECTORIES(${feather_core_BINARY_DIR}
+${DLFCN_WIN32_LIBRARY_DIR}
 ${GLUT_glut_LIBRARY_DIR}
-${dlfcn-win32_LIBRARY_DIR}
 ${SPECIAL_BOOST_LIBRARY_DIR}
 )
 
@@ -52,7 +51,7 @@ ADD_LIBRARY(feather_core SHARED ${feather_core_SRCS})
 
 QT5_USE_MODULES(feather_core OpenGL)
 
-TARGET_LINK_LIBRARIES(feather_core ${feather_core_LIBS}  ${CMAKE_DL_LIBS} freeglut dl)
+TARGET_LINK_LIBRARIES(feather_core ${feather_core_LIBS}  ${CMAKE_DL_LIBS} freeglut.lib dl.lib)
 
 
 
